@@ -33,6 +33,7 @@ srf_init:
 	waitnum:=Learnfg:=0, ClipSaved:="", MethodTable:={sanma:"sanma",lianda:"lianda"}, AppIMEtable:=[], history_field_array:=[]
 	pinyinec:={pinyin:"全拼",dnsp:"大牛双拼",xhsp:"小鹤双拼",zrmsp:"自然码双拼",abcsp:"ABC双拼",sgsp:"搜狗双拼",wrsp:"微软双拼",jjsp:"加加双拼"}, pinyince:=[], customspjm:=[]
 	Function_for_select:=[], save_field_array:=[], SQL_buffer:=[], srf_Plugins:=[], srf_last_input:=[], srf_Custom_Func:=[], srf_for_select_obj:=[], srf_all_input_:=[], custommhy:=[]
+	tfuzhuma:=1 ;间接辅助码开关
 	Gosub TRAYMENU
 	Gosub LoadLogo
 	_EventProc(0, 3, WinExist("A"))
@@ -51,7 +52,7 @@ srf_init:
 		pinyinec[Key]:=customspjm[Key,"1"], pinyince[customspjm[Key,"1"]]:=Key
 	For Key,Value In pinyinec
 		pinyince[Value]:=Key, pinyinlist .= "|" Value
-	If (fuzhuma)	; 载入辅助码
+	If (fuzhuma||tfuzhuma)	; 载入辅助码
 		Gosub Loadfuzhuma
 	If Autoupdatefg
 		SetTimer, srfAutoupdatefg, -10
@@ -266,7 +267,7 @@ Loadfuzhuma:
 ReLoadfuzhuma:
 	srf_fzm_fancha_table:=[]
 	If !FileExist(DataPath "@fzm.txt"){
-		fuzhuma:=0
+		fuzhuma:=tfuzhuma:=0
 		GuiControl, 3:, fuzhuma, 0
 		If (A_ThisLabel="ReLoadfuzhuma")
 			MsgBox, 48, 提示, 辅助码文件不存在，请在Data目录下放置辅助码文件@fzm.txt，格式如下：`n吖=k`n阿=e`n啊=k`n文本编码为UTF-8-Bom或ANSI
@@ -274,11 +275,12 @@ ReLoadfuzhuma:
 		tvar:=FileRead(DataPath "@fzm.txt")
 		Loop, Parse, tvar, `n, `r
 		{
-			If (A_LoopField="")
+			If (A_LoopField=""||SubStr(A_LoopField,1,1)="#")
 				Continue
 			srf_fzm_fancha_table[(tarr:=StrSplit(A_LoopField, "="))[1]]:=tarr[2]
 		}
 		Key:=tvar:=""
+		; OutputDebug, % srf_fzm_fancha_table.Count()
 	}
 Return
 FuncHotkey:

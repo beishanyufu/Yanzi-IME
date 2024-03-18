@@ -400,8 +400,12 @@ Return
 		If (!srf_mode&&SubStr(srf_all_Input,0)=func_key)
 			Goto srf_value_off
 		If (dwselect){
-			If (tfzm="")
+			If (tfzm=""){
 				dwselect:=0
+				; 刷新候选框以视觉删除间接辅助码引导符
+				; Gosub showhouxuankuang 
+				Gosub srf_tooltip_fanye
+			}
 			Else {
 				tfzm:=SubStr(tfzm, 1, -1)
 				jichu_for_select_Array:=pinyinmethod(srf_all_Input, Inputscheme), waitnum:=0
@@ -426,7 +430,16 @@ Return
 			Settimer srf_tooltip, -1
 	Return
 
-	Tab::Gosub MoreWait
+	Tab::
+		If (!fyfz&&!dwselect&&shurulei="pinyin"&&!InStr(srf_all_Input,func_key)){
+			dwselect:=(srf_inputing&&jichu_for_select_Array[1,0]~="^pinyin")
+			; 刷新候选框以显示间接辅助码引导符
+			; Gosub showhouxuankuang 
+			Gosub srf_tooltip_fanye
+		} Else
+			Gosub MoreWait
+	Return
+
 	+Tab::Gosub LessWait
 	Return
 	
@@ -574,7 +587,7 @@ Return
 #If
 
 dwselect:
-	dwselect:=srf_inputing&&fuzhuma, srf_select(Ord(SubStr(A_ThisHotkey,0))-96, IsPinyin, SubStr(A_ThisHotkey,0))
+	dwselect:=srf_inputing&&tfuzhuma, srf_select(Ord(SubStr(A_ThisHotkey,0))-96, IsPinyin, SubStr(A_ThisHotkey,0))
 Return
 #If srf_inputing
 searchinsertpos:

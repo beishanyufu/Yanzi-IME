@@ -22,3 +22,4 @@ tsf/*
 Yzime.code-workspace
 !ciku_demo.db
 !五笔字根+特殊符号显示支持.7z
+/.vscode

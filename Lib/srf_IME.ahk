@@ -1,10 +1,10 @@
 ﻿; 候选项翻页
 MoreWait:
 	If (waitnum*ListNum+ListNum<Max(jichu_for_select_Array.Length(),Function_for_select.Length())){
+		If (fyfz&&shurulei="pinyin"&&!InStr(srf_all_Input,func_key)&&InStr(fanyefg "PgUp PgDn Tab",A_ThisHotkey))
+			dwselect:=(srf_inputing&&tfuzhuma&&jichu_for_select_Array[1,0]~="^pinyin")		
 		waitnum+=1, localpos:=1
 		Gosub srf_tooltip_fanye
-		If (fyfz&&shurulei="pinyin"&&!InStr(srf_all_Input,func_key)&&InStr(fanyefg "PgUp PgDn Tab",A_ThisHotkey))
-			dwselect:=(srf_inputing&&fuzhuma&&jichu_for_select_Array[1,0]~="^pinyin")
 	}
 Return
 LessWait:
@@ -245,8 +245,12 @@ showhouxuankuang:
 		Caret:=GetCaretPos(), hasCaretPos:=1
 	If (ToolTipStyle=1){
 		ToolTip(1, ToolTipText "`n" srf_for_select, "x" Caret.x " y" Caret.Y+Caret.H)
-	} Else
+	} Else {
+		if (dwselect){
+			ToolTipText .= "︙" tfzm
+		}
 		DrawHXGUI(ToolTipText, srf_for_select_obj, Caret.X, Caret.Y+Caret.H, srf_direction, srf_all_Input~="^" (func_key="\"?"\\":func_key) "[a-z]+$"?SymbolFont:TextFont)
+	}
 Return
 ; 自学习
 zixuexi(){
