@@ -1,4 +1,11 @@
-﻿; 候选项翻页
+﻿; ##################################################################################################################################################################
+; # 声明：此文件基于开源仓库 <https://gitee.com/orz707/Yzime> (Commit:d1d0d9b15062de7381d1e7649693930c34fca53d) 
+; # 中的同名文件修改而来，并使用相同的开源许可 GPL-2.0 进行开源，具体的权利、义务和免责条款可查看根目录下的 LICENSE 文件
+; # 修改者：北山愚夫
+; # 修改时间：2024年3月15日 
+; ##################################################################################################################################################################
+
+; 候选项翻页
 MoreWait:
 	If (waitnum*ListNum+ListNum<Max(jichu_for_select_Array.Length(),Function_for_select.Length())){
 		If (fyfz&&shurulei="pinyin"&&!InStr(srf_all_Input,func_key)&&InStr(fanyefg "PgUp PgDn Tab",A_ThisHotkey))
@@ -146,7 +153,8 @@ srf_tooltip_fanye:
 		{
 			Case "pinyin":
 				Loop % Min(jichu_for_select_Array.Length()-ListNum*waitnum, ListNum)
-					Index:=srf_for_select_obj.Push(Mod(A_Index,10) "." jichu_for_select_Array[tvar:=ListNum*waitnum+A_Index, valueindex] (StrLen(jichu_for_select_Array[tvar, -2])<2?" " RegExReplace(jichu_for_select_Array[tvar, 6],"i)" RegExReplace(jichu_for_select_Array[tvar,-2],"(.)","(.*?)?$1"),,,1):""))
+					; Index:=srf_for_select_obj.Push(Mod(A_Index,10) "." jichu_for_select_Array[tvar:=ListNum*waitnum+A_Index, valueindex] (StrLen(jichu_for_select_Array[tvar, -2])<2?" " RegExReplace(jichu_for_select_Array[tvar, 6],"i)" RegExReplace(jichu_for_select_Array[tvar,-2],"(.)","(.*?)?$1"),,,1):""))
+					Index:=srf_for_select_obj.Push(Mod(A_Index,10) "." jichu_for_select_Array[tvar:=ListNum*waitnum+A_Index, valueindex] (showFZM?" " jichu_for_select_Array[tvar, 6]:""))
 					, srf_for_select .= _ srf_for_select_obj[Index]
 			Case "sanma":
 				If (ShowCode){

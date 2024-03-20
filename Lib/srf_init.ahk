@@ -34,6 +34,8 @@ srf_init:
 	pinyinec:={pinyin:"全拼",dnsp:"大牛双拼",xhsp:"小鹤双拼",zrmsp:"自然码双拼",abcsp:"ABC双拼",sgsp:"搜狗双拼",wrsp:"微软双拼",jjsp:"加加双拼"}, pinyince:=[], customspjm:=[]
 	Function_for_select:=[], save_field_array:=[], SQL_buffer:=[], srf_Plugins:=[], srf_last_input:=[], srf_Custom_Func:=[], srf_for_select_obj:=[], srf_all_input_:=[], custommhy:=[]
 	tfuzhuma:=1 ;间接辅助码开关
+	showFZM:=1 ;候选项是否显示辅助码
+	FirstWord := True ;辅助码是否仅针对首字
 	Gosub TRAYMENU
 	Gosub LoadLogo
 	_EventProc(0, 3, WinExist("A"))
@@ -60,7 +62,12 @@ srf_init:
 		Gosub help
 	JScript()
 Return
-
+#If srf_mode&&!srf_inputing
+~RCtrl::showFZM := !showFZM
+return
+~LCtrl::tfuzhuma := !tfuzhuma
+return
+#If
 DownloadRes(){
 	global
 	local ver

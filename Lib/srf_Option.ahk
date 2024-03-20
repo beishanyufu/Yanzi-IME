@@ -625,8 +625,8 @@ ini_Hotkey:
 	Else If (A_GuiControl="fuzhuma"){
 		If (fuzhuma)
 			Gosub ReLoadfuzhuma
-		Else
-			srf_fzm_fancha_table:=""
+		; Else
+		; 	srf_fzm_fancha_table:=""
 	} Else If (A_GuiControl="MemoryDB"){
 		If MemoryDB
 			MsgBox, 64, 提示, 数据库所在磁盘性能较好时不推荐启用此选项！

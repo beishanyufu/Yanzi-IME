@@ -42,9 +42,13 @@ Registrationhotkey:		; 注册快捷键
 			_:=Func("select_for_num").Bind(3)
 			Hotkey, R%key%, %_%
 		}
-	Loop 10 {
-		Hotkey, % A_Index-1, srf_select_ci, On
-		Hotkey, % "Numpad" A_Index-1, srf_select_ci, On
+	Loop 5 {
+		Hotkey, % A_Index, srf_select_ci, On
+		Hotkey, % "Numpad" A_Index, srf_select_ci, On
+	}
+	Loop 5 {
+		Hotkey, % Mod(A_Index+5,10), cnInputchar, On
+		Hotkey, % "Numpad" Mod(A_Index+5,10), cnInputchar, On
 	}
 	Hotkey, PgUp, lessWait, On
 	Hotkey, PgDn, MoreWait, On
@@ -314,12 +318,7 @@ Return
 	^2::
 	^3::
 	^4::
-	^5::
-	^6::
-	^7::
-	^8::
-	^9::
-	^0::srf_SetFirst(SubStr(A_ThisHotkey,0))
+	^5::srf_SetFirst(SubStr(A_ThisHotkey,0))
 
 	^Up::
 	^Down::srf_SetFirst(localpos, A_ThisHotkey="^Down"?1:-1)
@@ -328,12 +327,7 @@ Return
 	^!2::
 	^!3::
 	^!4::
-	^!5::
-	^!6::
-	^!7::
-	^!8::
-	^!9::
-	^!0::srf_delete(SubStr(A_ThisHotkey,0))
+	^!5::srf_delete(SubStr(A_ThisHotkey,0))
 
 	LAlt::ShowNotes()
 #If
@@ -449,7 +443,7 @@ Return
 		If (A_ThisHotkey="Shift")&&(Shiftfg<4||shurulei!="pinyin"){
 			Learnfg:=0
 			If (Shiftfg&2=2){
-				SendInput(Trim(srf_all_Input,eng_key func_key), SendDelaymode)
+				SendInput(Trim(srf_all_Input . tfzm,eng_key func_key), SendDelaymode)
 				Gosub srf_value_off
 				If (Shiftfg=3){
 					SetYzLogo(srf_mode:=0, 1)
@@ -483,7 +477,7 @@ Return
 			If InStr(srf_all_Input,func_key)
 				select_for_num(localpos)
 			Else
-				SendInput(Trim(srf_all_Input,eng_key func_key), SendDelaymode)
+				SendInput(Trim(srf_all_Input . tfzm,eng_key func_key), SendDelaymode)
 		Gosub srf_value_off
 	Return
 #If
@@ -541,11 +535,11 @@ Return
 	~3::
 	~4::
 	~5::
-	~6::
-	~7::
-	~8::
-	~9::
-	~0::
+	; ~6::
+	; ~7::
+	; ~8::
+	; ~9::
+	; ~0::
 	numberfg:=1
 	Return
 #If
@@ -559,8 +553,19 @@ cninputchar:
 	If StrLen(srf_all_Input)>100
 		Return
 	If (shurulei="pinyin"){
+		if (!dwselect && (InStr("67890", A_ThisHotkey)||(GetKeyState("CapsLock", "T")^GetKeyState("Shift", "P")))){
+		; if (!dwselect && (InStr("67890", A_ThisHotkey))){
+			dwselect:=(srf_inputing&&tfuzhuma&&jichu_for_select_Array[1,0]~="^pinyin")
+		}
 		If (dwselect){
-			tfzm:=StrLen(tfzm)=2?LTrim(A_ThisHotkey,"+"):tfzm LTrim(A_ThisHotkey,"+"), jichu_for_select_Array:=pinyinmethod(srf_all_Input, Inputscheme), waitnum:=0
+			; tfzm:=StrLen(tfzm)=2?LTrim(A_ThisHotkey,"+"):tfzm LTrim(A_ThisHotkey,"+")
+			; if (StrLen(tfzm)=2) {
+			; 	; tfzm:=""
+			; 	return
+			; }
+			tfzm:=tfzm . (GetKeyState("CapsLock", "T")^GetKeyState("Shift", "P")?Format("{:U}", SubStr(A_ThisHotkey,0)):SubStr(A_ThisHotkey,0))
+			; OutputDebug, % tfzm "`n"
+			jichu_for_select_Array:=pinyinmethod(srf_all_Input, Inputscheme), waitnum:=0
 			Gosub houchuli
 			Gosub srf_tooltip_fanye
 		} Else {

@@ -1,6 +1,13 @@
-﻿pinyinmethod(input, scheme:="pinyin"){	; 拼音取词
+﻿; ##################################################################################################################################################################
+; # 声明：此文件基于开源仓库 <https://gitee.com/orz707/Yzime> (Commit:d1d0d9b15062de7381d1e7649693930c34fca53d) 
+; # 中的同名文件修改而来，并使用相同的开源许可 GPL-2.0 进行开源，具体的权利、义务和免责条款可查看根目录下的 LICENSE 文件
+; # 修改者：北山愚夫
+; # 修改时间：2024年3月15日 
+; ##################################################################################################################################################################
+
+pinyinmethod(input, scheme:="pinyin"){	; 拼音取词
 	local
-	global srf_all_Input_, DB, fzm, Inputscheme, fuzhuma, history_field_array, save_field_array, chaojijp, imagine, DebugLevel
+	global srf_all_Input_, DB, fzm, Inputscheme, fuzhuma, tfuzhuma, history_field_array, save_field_array, chaojijp, imagine, DebugLevel
 		, Singleword, mhyRegExObj, CloudInput, jichu_for_select_Array, srf_all_Input, tfzm, dwselect, insertpos, Useless, CloudinputApi
 	Loop_num:=0, history_cutpos:=[0], index:=0, zisu:=10, estr:=input, begin:=A_TickCount
 	If (input~="[A-Z]")
@@ -19,15 +26,16 @@
 					jichu_for_select_Array[A_Index].Delete(-2)
 					Continue
 				}
-				If (StrLen(jichu_for_select_Array[A_Index,2])>1&&jichu_for_select_Array[A_Index,6]~="i)" RegExReplace(fzm,"(.)","$1(.*)?"))
+				; If (StrLen(jichu_for_select_Array[A_Index,2])>1&&jichu_for_select_Array[A_Index,6]~="i)" RegExReplace(fzm,"(.)","$1(.*)?"))
+				If fzmselect(jichu_for_select_Array[A_Index,6],fzm)
 					jichu_for_select_Array[A_Index, -2]:=fzm, saixuan.Push(jichu_for_select_Array[A_Index])
-				Else If (jichu_for_select_Array[A_Index,6]~="i)^" fzm)
-					jichu_for_select_Array[A_Index, -2]:=fzm, saixuan2.Push(jichu_for_select_Array[A_Index])
+				; Else If (jichu_for_select_Array[A_Index,6]~="i)^" fzm)
+				; 	jichu_for_select_Array[A_Index, -2]:=fzm, saixuan2.Push(jichu_for_select_Array[A_Index])
 				Else
 					jichu_for_select_Array[A_Index].Delete(-2)
 			}
-			Loop % saixuan2.Length()
-				saixuan.Push(saixuan2[A_Index])
+			; Loop % saixuan2.Length()
+			; 	saixuan.Push(saixuan2[A_Index])
 			If saixuan.Length()=0
 				fzm:=""
 		} Else If save_field_array[1,0]~="'[a-z;]$"
@@ -248,23 +256,24 @@
 			SearchResult.Push(CopyObj(history_field_array[zi, A_Index]))
 	; }
 	; If fuzhuma&&(((Inputscheme~="sp$")&&(srf_all_Input_["tip"]~="'[a-z][a-z]'$"))||((Inputscheme="pinyin")&&(srf_all_Input_["tip"]~="[a-z][aoeiuvng]'$"))){
-	If (fuzhuma){
+	If (fuzhuma||tfuzhuma){
 		Loop % SearchResult.Length()
 			If InStr(SearchResult[A_Index, 0], "pinyin|")&&(SearchResult[A_Index, 6]="")
 				SearchResult[A_Index, 6]:=fzmfancha(SearchResult[A_Index, 2])
 	}
-	If (tfzm){
+	If (tfzm!=""){
 		saixuan:=[]
 		Loop % SearchResult.Length(){
-			If (StrLen(SearchResult[A_Index,2])>1&&SearchResult[A_Index,6]~="i)" RegExReplace(tfzm,"(.)","$1(.*)?"))||(SearchResult[A_Index,6]~="i)^" tfzm)
+			; If (StrLen(SearchResult[A_Index,2])>1&&SearchResult[A_Index,6]~="i)" RegExReplace(tfzm,"(.)","$1(.*)?"))||(SearchResult[A_Index,6]~="i)^" tfzm)
+			If fzmselect(SearchResult[A_Index,6], tfzm)
 				SearchResult[A_Index, -2]:=dwselect?tfzm:SearchResult[A_Index,6], saixuan.Push(SearchResult[A_Index])
 			Else
 				SearchResult[A_Index].Delete(-2)
 		}
-		If saixuan.Length()
+		; If saixuan.Length()
 			SearchResult:=saixuan
-		Else
-			tfzm:=""
+		; Else
+		; 	tfzm:=""
 	} Else {
 		If chaojijp&&(srf_all_Input~="^[^']{4,8}$")&&!history_field_array.HasKey(cjjp:=Trim(RegExReplace(srf_all_Input,"(.)","$1'"), "'"))
 			history_field_array[cjjp]:= Get_jianpin(DB, scheme, "'" cjjp "'", mhyRegExObj, 0, 8, true)
@@ -297,22 +306,72 @@
 		CloudinputApi.get(srf_all_Input_["py"])
 	Return 0
 }
+fzmselect(wordf,inputf){ ; 用键入的辅助码匹配字词本身的辅助码
+    ; local
+	global FirstWord
+	If (FirstWord) {
+		If (fencifuPos:=InStr(wordf, "'"))
+			wordf := SubStr(wordf, 1, fencifuPos-1)
+		If (StrLen(inputf)=1) {
+			return InStr(wordf, inputf)
+		} Else {
+			If !(inputf ~= "^(\d\D|\D\d)")
+				return 0
+			return InStr(wordf,SubStr(inputf,1,1)) && InStr(wordf,SubStr(inputf,2,1))
+		}
+	} Else If (StrLen(inputf)=1) { ; 一位辅助码
+        return InStr(wordf, inputf)
+    } Else If !InStr(wordf, "'") { ; 单字和多位码
+		If !(inputf ~= "^(\d\D|\D\d)")
+			return 0
+        ; return wordf "|" wordf ~= "i)" SubStr(inputf,1,1) ".*\|.*" SubStr(inputf,2,1)
+		return InStr(wordf,SubStr(inputf,1,1)) && InStr(wordf,SubStr(inputf,2,1))
+    } Else { ; 多字词和多位码
+        ; 如果两位码能与词中的某个字的辅助码匹配则返回真
+		If (inputf ~= "^(\d\D|\D\d)") {
+			; m := "i)" SubStr(inputf,1,1) ".*\|.*" SubStr(inputf,2,1)
+			; Loop, Parse, wordf, ' 
+			; 	{
+			; 		if(A_LoopField "|" A_LoopField ~= m) 
+			; 			return 1 
+			; 	} 
+			fzm1:=SubStr(inputf,1,1), fzm2:=SubStr(inputf,2,1)
+			Loop, Parse, wordf, ' 
+			{
+				If (InStr(A_LoopField, fzm1) && InStr(A_LoopField, fzm2))
+					return 1
+			}
+		}
+        ; 如果多位码的每个码都能有序但可不连续地分别匹配上词中字的辅助码则返回真
+        ; return wordf ~= "i)" RTrim(RegExReplace(inputf,"(.)","$1.*\|.*"), ".*\|.*")
+		warr := StrSplit(wordf, "'")
+		pos := 0
+		Loop, Parse, % SubStr(inputf,1,2)
+		{
+			m := 0
+			Loop % warr.Length()-pos
+			{
+				pos += 1
+				if (m:=InStr(warr[pos], A_LoopField))
+					break
+			}
+			if !m 
+				break
+		}
+		return m
+    }
+}
 fzmfancha(str){		; 辅助码构成规则
 	local
 	global srf_fzm_fancha_table
-	If (len:=StrLen(str))=1
-		Return srf_fzm_fancha_table[str]
-	Else If len>4
-		Return
 	result:=""
-	; 每字第一码
 	Loop, Parse, str
-		result .= SubStr(srf_fzm_fancha_table[A_LoopField], 1, 1)
+		result .= ((r:=srf_fzm_fancha_table[A_LoopField])?r:"67890ao") . "'"
 	; 词末字辅助
 	; result := srf_fzm_fancha_table[SubStr(str,0,1)]
 	; 首字辅助
 	; result := srf_fzm_fancha_table[SubStr(str,1,1)]
-	Return result
+	Return  RTrim(result, "'")
 }
 firstzhuju(arr){	; 首选组词
 	rarr:=["",""]
