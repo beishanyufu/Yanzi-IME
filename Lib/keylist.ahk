@@ -660,16 +660,22 @@ ToolTipInputStatus(){
 			; fg:=(!(srf_mode&&srf_inputing)&&GetKeyState("CapsLock", "T")?"Ａ":srf_mode||IME_GETOPENSTATUS()?"中":"英")
 			fg:=(!(srf_mode&&srf_inputing)&&GetKeyState("CapsLock", "T")?"Ａ":srf_mode?"中":"英")
 			ToolTip, % fg, Caret_.X+5, Caret_.Y+30
-			SetYzLogo(fg="中", 0)
+			; SetYzLogo(fg="中", 0)
 			SetTimer, ToolTipOff, -1000
 		}
 	}
 }
-
+MouseIsOverDesktop() {
+    MouseGetPos,,, Win
+    return WinExist("ahk_exe explorer.exe" . " ahk_id " . Win)
+}
+#If MouseIsOverDesktop()
 ~LButton Up::
-	; If (!srf_inputing)
-	; 	ToolTipInputStatus()
+	If (!srf_inputing)
+		_EventProc(0, 3, WinExist("A"))
+		; ToolTipInputStatus()
 Return
+#If
 #If MouseCross&&A_PriorHotkey="~LButton Up"&&A_TimeSincePriorHotkey<1200
 LCtrl::selectmenu()
 <^vkFF::Return
