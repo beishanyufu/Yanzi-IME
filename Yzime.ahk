@@ -32,6 +32,7 @@ CoordMode, ToolTip, Screen
 SetWorkingDir %A_ScriptDir%
 CloseOtherYZ()
 OnClipboardChange("ClipChanged")
+OnClipboardChange("CheckClipboard",-1)
 OnMessage(0x201, "WM_LBUTTONDOWN")
 OnMessage(0x4a, "Receive_WM_COPYDATA")
 OnMessage(0x11, "WM_QUERYENDSESSION")

@@ -36,6 +36,7 @@ srf_init:
 	tfuzhuma:=1 ;间接辅助码开关
 	showFZM:=1 ;候选项是否显示辅助码
 	FirstWord := True ;辅助码是否仅针对首字
+	ConnectIMEandCursor:=1 ;是否与vscode插件 IME and Cursor 进行通信
 	Gosub TRAYMENU
 	Gosub LoadLogo
 	_EventProc(0, 3, WinExist("A"))
@@ -61,6 +62,13 @@ srf_init:
 	If A_Args[1]
 		Gosub help
 	JScript()
+	If (ConnectIMEandCursor){
+		DirectIMEandCursor(srf_mode)
+		OnClipboardChange("CheckClipboard",-1)
+	}
+	Else{
+		OnClipboardChange("CheckClipboard",0)
+	}
 Return
 #If srf_mode&&!srf_inputing
 ~RCtrl::showFZM := !showFZM
@@ -158,6 +166,8 @@ _EventProc(phook, Msg, Hwnd){
 			SetTimer detectwindows, -10
 		} Else If (srf_mode!=IMEmode-1)
 			Gosub Switchstate
+		Else 
+			DirectIMEandCursor(srf_mode)
 		If (!srf_inputing){
 			SetTimer, _SetYzLogo, -50
 			SetTimer, ToolTipInputStatus, -50
@@ -603,10 +613,26 @@ SetYzLogo(fg, state:=1){
     } Else {
 		Menu, Tray, Icon, %DataPath%Yzime.icl, 2, 1
 	}
+	; DirectIMEandCursor(fg)
 	TSFMem.SetFlags(!A_IsSuspended&&fg?1:0)
 
 	If (Different&&state){
 		WinGet, exe, ProcessName, A
 		AppIMEtable[exe]:=fg
+	}
+}
+; 通知 vscode 切换光标
+DirectIMEandCursor(fg){
+	global ConnectIMEandCursor
+	SetTitleMatchMode 2
+	If (ConnectIMEandCursor && WinActive("Visual Studio Code")){
+		; Send, % "^+#!" (fg?"c":"e")
+		If (fg){
+			; OutputDebug, toCh `n
+			send, ^+#!c
+		} Else {
+			; OutputDebug, toEn `n
+			send, ^+#!e
+		}
 	}
 }

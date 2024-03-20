@@ -293,6 +293,7 @@ Switchstate:
 		KeyWait, % tvar
 	If !Double||(A_ThisHotkey&&(A_PriorHotkey=A_ThisHotkey)&&(A_TimeSincePriorHotkey<400)){
 		SetYzLogo(srf_mode:=!srf_mode, A_ThisLabel="srfSwitch")
+		DirectIMEandCursor(srf_mode)
 		If (!srf_mode){
 			If (Shiftfg=2)&&(A_ThisHotkey~="Shift$")&&srf_inputing
 				SendInput(Trim(srf_all_Input,eng_key func_key), SendDelaymode)
@@ -687,6 +688,7 @@ recoverclip:
 	SendInput, {RShift Down}{Insert}{RShift Up}
 Return
 ClipChanged(Type){
+	; OutputDebug, % Type " from origin" "`n"
 	global ClipSaved, ClipHistory
 	ClipSaved:=""
 	If (ClipHistory&&Type)
@@ -901,4 +903,25 @@ IME_GETOPENSTATUS(WinTitle="A"){	; 多进程输入状态优化
 		}
 	; DefaultIMEWnd:=DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", hWnd, "Uint")
 	Return res
+}
+
+CheckClipboard(DataType) {
+	; OutputDebug, % DataType " from check" "`n"
+	if(DataType=1 && WinActive("ahk_exe Code.exe") && RegExMatch(Clipboard, "Ime&Cursor:PleaseSwitchTo([01])$", msg)){
+		SwitchTo(msg1)
+		OnClipboardChange("ClipChanged",0)
+		OnClipboardChange("CheckClipboard",0) 
+		Clipboard := SubStr(Clipboard,1,-StrLen(msg))
+		OnClipboardChange("ClipChanged",1)
+		OnClipboardChange("CheckClipboard",-1)
+		return 1
+	} 
+}
+
+SwitchTo(to){
+	local
+	global srf_mode
+	if(to^srf_mode){
+		gosub srfSwitch
+	}
 }
