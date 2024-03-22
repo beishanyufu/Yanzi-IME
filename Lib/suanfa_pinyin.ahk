@@ -308,8 +308,8 @@ pinyinmethod(input, scheme:="pinyin"){	; 拼音取词
 }
 fzmselect(wordf,inputf){ ; 用键入的辅助码匹配字词本身的辅助码
     ; local
-	global FirstWord
-	If (FirstWord) {
+	global FirstZi
+	If (FirstZi) {
 		If (fencifuPos:=InStr(wordf, "'"))
 			wordf := SubStr(wordf, 1, fencifuPos-1)
 		If (StrLen(inputf)=1) {

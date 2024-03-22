@@ -154,7 +154,7 @@ srf_tooltip_fanye:
 			Case "pinyin":
 				Loop % Min(jichu_for_select_Array.Length()-ListNum*waitnum, ListNum)
 					; Index:=srf_for_select_obj.Push(Mod(A_Index,10) "." jichu_for_select_Array[tvar:=ListNum*waitnum+A_Index, valueindex] (StrLen(jichu_for_select_Array[tvar, -2])<2?" " RegExReplace(jichu_for_select_Array[tvar, 6],"i)" RegExReplace(jichu_for_select_Array[tvar,-2],"(.)","(.*?)?$1"),,,1):""))
-					Index:=srf_for_select_obj.Push(Mod(A_Index,10) "." jichu_for_select_Array[tvar:=ListNum*waitnum+A_Index, valueindex] (showFZM?" " jichu_for_select_Array[tvar, 6]:""))
+					Index:=srf_for_select_obj.Push(Mod(A_Index,10) "." jichu_for_select_Array[tvar:=ListNum*waitnum+A_Index, valueindex] (ShowFZM?" " jichu_for_select_Array[tvar, 6]:""))
 					, srf_for_select .= _ srf_for_select_obj[Index]
 			Case "sanma":
 				If (ShowCode){

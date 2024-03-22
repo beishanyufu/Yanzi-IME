@@ -14,14 +14,14 @@ srf_init:
 	srf_default_value:={Settings:{Startingup:0, Autoupdatefg:0, UIAccess:0, CloudInput:0, DebugLevel:1, fuzhuma:0, SendDelay:0, ClipHistory:0, Imagine:0, MemoryDB:0, Settingsbak:"", MouseCross:0, dwxg:0
 		, Magicstring:0, Superrun:0, Wordfrequency:0, fixedword:0, Learning:0, Inputscheme:"pinyin", chaojijp:0, Traditional:0, Showquanpin:0, mhy:"0000000000", fyfz:0, bmhg:0, dgsp:0, FirstNotSave:0
 		, lspy:0, simasp:1, wumaqc:1, wumasp:1, Different:1, IMEmode:2, ClipWindows:"", IMECnWindows:"", IMEEnWindows:"", EnSymbol:0, SaveCloud:0, ShowCdode:0, Singleword:0, zigen:0, TSFmode:0
-		, decfre:0, Tofirst:0, Useless:0}
+	, decfre:0, Tofirst:0, Useless:0, tfuzhuma:1, ShowFZM:0, FirstZi:1, ConnectIMEandCursor:1, ShowLogo:1}
 		, Func:{CustomFuncName:"{""fanyi"":""fy"",""label"":""l"",""magic"":""s"",""mode"":""m"",""run"":""r"",""scheme"":""sc"",""soso"":""ss""}"}
 		, GuiStyle:{TextFont:SystemDefaultFont, SymbolFont:"Segoe UI Symbol", FontBold:0, FontSize:20, BorderColor:"444444", CodeColor:"C9E47E", TextColor:"EEECE2"
 		, BackgroundColor:"444444", ListNum:5, Textdirection:"Horizontal", FocusBackColor:"CAE682", FocusColor:"070C0D"
-		, LogoSize:100, ToolTipStyle:(A_OSVersion="WIN_XP"?1:2), Lockedposition:0}
+		, LogoSize:8, ToolTipStyle:(A_OSVersion="WIN_XP"?1:2), Lockedposition:0}
 		, Hotkey:{Double:0, Switch:"Shift", Enterfg:2, Escfg:1, Shiftfg:3, fanyefg:",.", 23hx:"", ycdzfg:""}
 		, DBFile:{main:"Data\ciku.db", extend:"Data\ciku_extend.db"}
-		, Version:{Version:"2.1.0"}}
+		, Version:{Version:"1.0.0"}}
 	LoadIni()
 	EnableUIAccess()
 	DownloadRes()
@@ -33,10 +33,6 @@ srf_init:
 	waitnum:=Learnfg:=0, ClipSaved:="", MethodTable:={sanma:"sanma",lianda:"lianda"}, AppIMEtable:=[], history_field_array:=[]
 	pinyinec:={pinyin:"全拼",dnsp:"大牛双拼",xhsp:"小鹤双拼",zrmsp:"自然码双拼",abcsp:"ABC双拼",sgsp:"搜狗双拼",wrsp:"微软双拼",jjsp:"加加双拼"}, pinyince:=[], customspjm:=[]
 	Function_for_select:=[], save_field_array:=[], SQL_buffer:=[], srf_Plugins:=[], srf_last_input:=[], srf_Custom_Func:=[], srf_for_select_obj:=[], srf_all_input_:=[], custommhy:=[]
-	tfuzhuma:=1 ;间接辅助码开关
-	showFZM:=1 ;候选项是否显示辅助码
-	FirstWord := True ;辅助码是否仅针对首字
-	ConnectIMEandCursor:=1 ;是否与vscode插件 IME and Cursor 进行通信
 	Gosub TRAYMENU
 	Gosub LoadLogo
 	_EventProc(0, 3, WinExist("A"))
@@ -70,12 +66,6 @@ srf_init:
 		OnClipboardChange("CheckClipboard",0)
 	}
 Return
-#If srf_mode&&!srf_inputing
-~RCtrl::showFZM := !showFZM
-return
-~LCtrl::tfuzhuma := !tfuzhuma
-return
-#If
 DownloadRes(){
 	global
 	local ver
@@ -288,8 +278,9 @@ ReLoadfuzhuma:
 	If !FileExist(DataPath "@fzm.txt"){
 		fuzhuma:=tfuzhuma:=0
 		GuiControl, 3:, fuzhuma, 0
+		GuiControl, 3:, tfuzhuma, 0
 		If (A_ThisLabel="ReLoadfuzhuma")
-			MsgBox, 48, 提示, 辅助码文件不存在，请在Data目录下放置辅助码文件@fzm.txt，格式如下：`n吖=k`n阿=e`n啊=k`n文本编码为UTF-8-Bom或ANSI
+			MsgBox, 48, 提示, 辅助码文件不存在，请在Data目录下放置辅助码文件@fzm.txt，文本编码为UTF-8-Bom或ANSI
 	} Else {
 		tvar:=FileRead(DataPath "@fzm.txt")
 		Loop, Parse, tvar, `n, `r
@@ -575,38 +566,42 @@ _SetYzLogo(){
 }
 SetYzLogo(fg, state:=1){
 	static Hwnd:=0, Size:=0
-	global pToken_, LogoSize, Yzimeini, Different, AppIMEtable, TSFMem, TSFmode
+	global pToken_, LogoSize, Yzimeini, Different, AppIMEtable, TSFMem, TSFmode, ShowLogo
+    If (ShowLogo) {
+		If (!pToken_)&&(!pToken_:=Gdip_Startup()){
+			MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
+			ExitApp
+		}
 
-	If (!pToken_)&&(!pToken_:=Gdip_Startup()){
-		MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
-		ExitApp
+		If (!Hwnd){
+			Gui, 2:-Caption +E0x8080088 +ToolWindow +LastFound -DPIScale +HwndHwnd
+			Gui, 2:Show, NA
+			WinSet, ExStyle, +0x20, ahk_id%Hwnd%
+		}
+
+		If (MonInfo:=MDMF_GetInfo(MDMF_FromPoint((Caret_:=GetCaretPos()).X,Caret_.Y)))
+			MonLeft:=MonInfo.Left, MonTop:=MonInfo.Top, MonRight:=MonInfo.Right, MonBottom:=MonInfo.Bottom
+		Else
+			SysGet, Mon, Monitor
+
+		hbm:=CreateDIBSection(BW:=MonRight-MonLeft, LogoSize), hdc:=CreateCompatibleDC()
+		obm:=SelectObject(hdc, hbm), G:=Gdip_GraphicsFromHDC(hdc) ;, Gdip_SetInterpolationMode(G, 7)
+		pBrush := []
+		pBrush[1] := Gdip_BrushCreateSolid("0xFF0060FF")
+		pBrush[3] := Gdip_BrushCreateSolid("0xFFFFFFFF")
+		pBrush[2] := Gdip_BrushCreateSolid("0xFFFF3838")
+		pBrush[4] := Gdip_BrushCreateSolid("0xFFFFFF00")
+		Gdip_FillRoundedRectangle(G, pBrush[1+fg], 0, 0, BW//4, LogoSize, 0)
+		Gdip_FillRoundedRectangle(G, pBrush[3+fg], BW//4, 0, BW//4, LogoSize, 0)
+		Gdip_FillRoundedRectangle(G, pBrush[1+fg], BW//2, 0, BW//2, LogoSize, 0)
+		UpdateLayeredWindow(Hwnd, hdc, MonLeft, MonTop, BW, LogoSize)
+		SelectObject(hdc, obm), DeleteObject(hbm), DeleteDC(hdc), Gdip_DeleteGraphics(G)    ; , Gdip_DisposeImage(pBitmap)
+		For __,_value in pBrush
+			Gdip_DeleteBrush(_value)
+	} Else If (Hwnd){
+		Gui, 2:Destroy
+		Hwnd:=0
 	}
-
-	If (!Hwnd){
-		Gui, 2:-Caption +E0x8080088 +ToolWindow +LastFound -DPIScale +HwndHwnd
-		Gui, 2:Show, NA
-		WinSet, ExStyle, +0x20, ahk_id%Hwnd%
-	}
-
-	If (MonInfo:=MDMF_GetInfo(MDMF_FromPoint((Caret_:=GetCaretPos()).X,Caret_.Y)))
-		MonLeft:=MonInfo.Left, MonTop:=MonInfo.Top, MonRight:=MonInfo.Right, MonBottom:=MonInfo.Bottom
-	Else
-		SysGet, Mon, Monitor
-
-	hbm:=CreateDIBSection(BW:=MonRight-MonLeft, LogoSize//10), hdc:=CreateCompatibleDC()
-	obm:=SelectObject(hdc, hbm), G:=Gdip_GraphicsFromHDC(hdc) ;, Gdip_SetInterpolationMode(G, 7)
-	pBrush := []
-	pBrush[1] := Gdip_BrushCreateSolid("0xFF0060FF")
-	pBrush[3] := Gdip_BrushCreateSolid("0xFFFFFFFF")
-	pBrush[2] := Gdip_BrushCreateSolid("0xFFFF3838")
-	pBrush[4] := Gdip_BrushCreateSolid("0xFFFFFF00")
-	Gdip_FillRoundedRectangle(G, pBrush[1+fg], 0, 0, BW//4, LogoSize//10, 0)
-	Gdip_FillRoundedRectangle(G, pBrush[3+fg], BW//4, 0, BW//4, LogoSize//10, 0)
-	Gdip_FillRoundedRectangle(G, pBrush[1+fg], BW//2, 0, BW//2, LogoSize//10, 0)
-	UpdateLayeredWindow(Hwnd, hdc, MonLeft, MonTop, BW, LogoSize//10)
-	SelectObject(hdc, obm), DeleteObject(hbm), DeleteDC(hdc), Gdip_DeleteGraphics(G)    ; , Gdip_DisposeImage(pBitmap)
-	For __,_value in pBrush
-		Gdip_DeleteBrush(_value)
 	; 切换托盘图标
 	If (fg){
 		Menu, Tray, Icon, %DataPath%Yzime.icl, 1, 1

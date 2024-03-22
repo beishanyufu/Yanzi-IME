@@ -22,7 +22,7 @@ Option_Adv:
 	Gui, 3:Default
 	Gui, 3:Margin, 12, 12
 	Gui, 3:Font, s10 bold, %GUIFont%
-	Gui, 3:Add, Tab3, xp yp+15 gswitchtab AltSubmit, 常规|按键|界面|进阶|关于
+	Gui, 3:Add, Tab3, xp yp+15 gswitchtab AltSubmit, 常规|按键|界面|进阶|燕子|关于
 	Gui, 3:Tab, 1
 	Gui, 3:Font, s10 norm, %GUIFont%
 	Gui, 3:Add, CheckBox, xm+15 ym+45 Section gStarting vStartingup Checked%Startingup%, 开机启动
@@ -59,7 +59,7 @@ Option_Adv:
 	GuiControl, 3:Move, 输入方案, % "h" tempPh+40
 	Gui, 3:Add, GroupBox, xm+15 y+20 w%tvar% h95 Section, 输入选项
 	Gui, 3:Add, Checkbox, xm+30 yp+25 gini_Settings vShowquanpin Checked%Showquanpin% Hidden, 扩展到全拼
-	Gui, 3:Add, Checkbox, x+15 yp gini_Settings vfuzhuma Checked%fuzhuma% Hidden, 辅助码
+	Gui, 3:Add, Checkbox, x+15 yp gini_Settings vfuzhuma Checked%fuzhuma% Hidden, 直接辅助码
 	Gui, 3:Add, Checkbox, x+15 yp gini_Settings vdwxg Checked%dwxg% Hidden, 定位修改
 	Gui, 3:Add, Checkbox, x+15 yp gini_Settings vbmhg Checked%bmhg% Hidden, 编码回改
 	Gui, 3:Add, Checkbox, xm+30 y+10 gini_Settings vSaveCloud Checked%SaveCloud% Hidden, 保存云结果
@@ -139,17 +139,17 @@ Option_Adv:
 	For key,value In ["CodeColor","TextColor","BackgroundColor","BorderColor","FocusBackColor","FocusColor"]
 		SetButtonColor(value, "0x" %value%)
 	Gui, 3:Add, Text, xm+45 y+15, 候选项数：
-	Gui, 3:Add, DropDownList, x+1 yp-5 w74 vListNum gini_GuiStyle, 2|3|4|5||6|7|8|9|10
-	Gui, 3:Add, Text, x+30 yp+5 w100 Right, Logo缩放：
-	Gui, 3:Add, Edit, x+0 yp-5 w60 Limit3 Number vLogoSize
-	Gui, 3:Add, UpDown, Range10-100, 100
-	Gui, 3:Add, Text, x+10 yp+5, `%
+	Gui, 3:Add, DropDownList, x+1 yp-5 w74 vListNum gini_GuiStyle, 2|3|4|5
+	Gui, 3:Add, Text, x+31 yp+5 w100 Right, 中英文指示器：
+	Gui, 3:Add, Edit, x+0 yp-5 w40 Limit2 Number vLogoSize
+	Gui, 3:Add, UpDown, Range1-99, 10
+	Gui, 3:Add, Text, x+7 yp+5, `像素
 	Gui, 3:Add, Text, xm+45 y+20, 显示样式：
 	Gui, 3:Add, DropDownList, x+1 yp-5 w74 vToolTipStyle gini_GuiStyle AltSubmit Choose%ToolTipStyle%, ToolTip|Gdip
 	Gui, 3:Add, CheckBox, x+50 yp+5 w100 vLockedposition gini_GuiStyle Checked%Lockedposition%, 固定位置
 	Gui, 3:Add, Text, xm+45 y+20, 排列方式：
-	Gui, 3:Add, Radio, x+30 yp Checked vHorizontal gTextdirection, 横版
-	Gui, 3:Add, Radio, x+30 yp vVertical gTextdirection, 竖版
+	Gui, 3:Add, Radio, % "x+30 yp vHorizontal gTextdirection Checked" (Textdirection="Horizontal"), 横版
+	Gui, 3:Add, Radio, % "x+30 yp vVertical gTextdirection Checked" (Textdirection="Vertical"), 竖版
 	GuiControlGet, tempP, 3:Pos, 排列方式：
 	GuiControl, 3:Move, 候选窗口, % "h" tempPy-15
 	Gui, 3:Tab, 4
@@ -164,6 +164,15 @@ Option_Adv:
 	GuiControlGet, tempP, 3:Pos, FuncLV
 	GuiControl, 3:Move, 命令管理, % "h" tempPh+40
 	Gui, 3:Tab, 5
+	Gui, 3:Add, GroupBox, xm+15 ym+40 w%tvar% h325, 扩展选项
+	Gui, 3:Add, CheckBox, xm+45 yp+30 gini_Settings vtfuzhuma Checked%tfuzhuma%, 直接输入的间接辅助码
+	Gui, 3:Add, CheckBox, xm+45 yp+30 gini_Settings vShowFZM Checked%ShowFZM%, 显示候选项辅助码
+	Gui, 3:Add, CheckBox, xm+45 yp+30 gini_Settings vFirstZi Checked%FirstZi%, 辅助码仅针对首字
+	Gui, 3:Add, CheckBox, xm+45 yp+30 gini_Settings vShowLogo Checked%ShowLogo%, 显示中英文指示器
+	Gui, 3:Add, CheckBox, xm+45 yp+30 gini_Settings vConnectIMEandCursor Checked%ConnectIMEandCursor%, 支持 IME-and-Cursor
+	GuiControlGet, tempP, 3:Pos, ConnectIMEandCursor
+	GuiControl, 3:Move, 扩展选项, % "h" tempPy-15
+	Gui, 3:Tab, 6
 	Gui, 3:Add, Picture, xm+10 ym+50 w35 h-1 Icon1, %DataPath%Yzime.icl
 	Gui, 3:Font, s15 Bold, %GUIFont%
 	Gui, 3:Add, Text, x+5 yp+5, 燕子输入法
@@ -196,7 +205,8 @@ Option_Adv:
 	; GuiControl, 3:, ShowCode, % Yzimeini["Settings", "ShowCode"]
 	GuiControl, 3:Text, FontSize, %FontSize%
 	GuiControl, 3:Text, LogoSize, %LogoSize%
-	GuiControl, 3:, %Textdirection%, 1
+	; GuiControl, 3:, %Textdirection%, 1
+	; GuiControl, 3:, ShowFZM, %ShowFZM%
 	GuiControl, 3:, % (ycdzfg="-="?"减号/等号":ycdzfg="[]"?"左右方括号":"无"), 1
 	For Key, Value In ["Superrun","Magicstring","ClipHistory","MouseCross"]
 		GuiControl, 3:, %Value%, % Yzimeini["Settings",Value]
@@ -231,6 +241,7 @@ Option_Adv:
 	ICELV2.OnMessage()
 	If (A_ThisLabel="Option_Adv")
 		GuiControl, 3:Choose, SysTabControl321, |4
+	; GuiControl, 3:Choose, SysTabControl321, |5
 	Gui, 3:Show, AutoSize, 燕子输入法 选项
 	GuiControl, 3:+gini_GuiStyle, FontSize
 	GuiControl, 3:+gini_GuiStyle, LogoSize
@@ -464,7 +475,7 @@ Return
 
 switchtab:
 	GuiControlGet, tvar, , SysTabControl321
-	GuiControlGet, tempP, 3:Pos, % (tvar=3?"候选窗口":tvar=2?"输入法热键":tvar=4?"命令管理":tvar=1?"其他选项":"Static38")
+	GuiControlGet, tempP, 3:Pos, % (tvar=3?"候选窗口":tvar=2?"输入法热键":tvar=4?"命令管理":tvar=1?"其他选项":tvar=5?"Button66":"Button67")
 	GuiControl, 3:Move, SysTabControl321, % "h" tempPy+tempPh
 	Gui, 3:Show, AutoSize
 Return
@@ -623,10 +634,15 @@ ini_Hotkey:
 	} Else If (A_GuiControl="ToolTipStyle")
 		Gosub houxuankuangguicreate
 	Else If (A_GuiControl="fuzhuma"){
-		If (fuzhuma)
+		If (fuzhuma && !tfuzhuma)
 			Gosub ReLoadfuzhuma
-		; Else
-		; 	srf_fzm_fancha_table:=""
+		Else If (!tfuzhuma)
+		 	srf_fzm_fancha_table:=""
+	} Else If (A_GuiControl="tfuzhuma"){
+		If (tfuzhuma && !fuzhuma)
+			Gosub ReLoadfuzhuma
+		Else If (!fuzhuma)
+		 	srf_fzm_fancha_table:=""
 	} Else If (A_GuiControl="MemoryDB"){
 		If MemoryDB
 			MsgBox, 64, 提示, 数据库所在磁盘性能较好时不推荐启用此选项！
@@ -650,6 +666,16 @@ ini_Hotkey:
 				MsgBox, 16, 提示, 字根提示需要字根拆分文件@%Inputscheme%.txt，`nGitee、群文件有wubi98拆分文件下载。
 			}
 		}
+	} Else If (A_GuiControl="ConnectIMEandCursor"){
+		If (ConnectIMEandCursor){
+			DirectIMEandCursor(srf_mode)
+			OnClipboardChange("CheckClipboard",-1)
+		}
+		Else{
+			OnClipboardChange("CheckClipboard",0)
+		}
+	} Else If (A_GuiControl="ShowLogo"){
+		SetYzLogo(srf_mode,0)
 	}
 Return
 
@@ -813,9 +839,10 @@ WM_MOUSEMOVE(wParam, lParam, Msg, Hwnd){
 			,Wordfrequency:"勾选后词频随使用逐步变化，影响词条在候选中的排列顺序`n手动调频Ctrl + 0-9",Superrun:"勾选后在候选中显示超级命令库的首个命令，`n按。键可启动程序、打开文件、运行ahk脚本",Magicstring:"勾选后在候选中显示魔法字符串库的首个词条，词条可以带换行等格式，`n按，键上屏文本、以键击发送完成快速填表、粘贴大段文本",decfre:"对选择的词外其他重码词进行降频处理",FirstNotSave:"拼音长句模式的组词结果在上屏后不保存"
 			,Learning:"保存10字以内的词组到词库`n形码``键引导、分隔编码",Different:"勾选后每个应用有独立的中英文输入状态，切换应用时自动切换输入状态",IMEmode:"切换到应用时的默认输入状态。",应用管理:"设置每次切换到该应用时的输入状态",SymbolFont:"设置候选项界面输入特殊符号时的字体",MouseCross:"鼠标划词后1s内按LCtrl弹出选择菜单",dwxg:"长词条中间部分不合意，长按空格键后释放，`n再按A-Z上屏长词条的前部分，进入辅助码筛选模式"
 			,拼音类:"包括全拼、双拼方案，共用pinyin词库",形码类:"最大码长等于4的方案，导入相应词库后生成对应选项，导入文件名即方案名",Traditional:"勾选后词条中简体字以繁体字形式显示上屏，`n不勾选时不对词条中的繁体进行处理",ShowCode:"形码类临时拼音输入时反查编码",lspy:"进入临时拼音模式",zigen:"显示形码的拆分，需要拆分文件",Tofirst:"选择后使该候选到当前序列首位",simasp:"最大码长时无重自动上屏",wumasp:"大于最大码长时当前焦点项上屏",dgsp:"当前编码无候选时减一码自动上屏"
-			,Showquanpin:"显示双拼对应的全拼编码",CloudInput:"候选中插入云输入的结果，显示速度与网络速度相关`n获取失败或与本地词条重复时不显示",SaveCloud:"勾选自学习后选择云输入的候选并记录到词库`n不需要开启自学习",fuzhuma:"使用任意一或二位辅助码协助筛选候选项去除重码，`n默认为燕子辅助码，替换Data\@fzm.txt文件自定义辅助码",TextFont:"设置候选项界面的字体",FontSize:"设置候选项字体大小",LogoSize:"设置输入状态指示图标的大小，设为0时隐藏Logo`n在Data目录放置Yzime.png替换Logo",ToolTipStyle:"设置候选界面的样式，ToolTip兼容性好速度慢，Gdip速度更快适合Win7及以上的系统"
+			,Showquanpin:"显示双拼对应的全拼编码",CloudInput:"候选中插入云输入的结果，显示速度与网络速度相关`n获取失败或与本地词条重复时不显示",SaveCloud:"勾选自学习后选择云输入的候选并记录到词库`n不需要开启自学习",fuzhuma:"正常输入拼音后，再直接敲入一个小写字母代表的部首辅助码协助筛选候选项",TextFont:"设置候选项界面的字体",FontSize:"设置候选项字体大小",LogoSize:"设置中英文状态指示器的粗细",ToolTipStyle:"设置候选界面的样式，ToolTip兼容性好速度慢，Gdip速度更快适合Win7及以上的系统"
 			,Lockedposition:"固定候选界面不随光标移动，可鼠标拖动至适合位置",srfhotkey:"设置输入法中/英文状态切换热键，`nCtrl对应的热键前缀为 ^`nShift对应的热键前缀为 +`nAlt对应的热键前缀为 !`nWin对应的热键前缀为 #`n如设置切换键为Ctrl + Space，填入^Space再点设置`n更多按键名可查阅ahk中文帮助<目录/热键>、<索引/key list>部分",Double:"勾选后双击切换输入模式，LCtrl+LAlt+F12可禁用/恢复所有热键",FuncLV:"内置函数命令，可输入命令名加/使用，可自定义设置命令名",导入词库:"导入的码表文件是以待导入的词库名为前缀的文本文档(如wubi86_1.txt;zhengma.txt)，推荐编码为UTF-8-BOM。`n每行包括编码、词条、权重或备注(非必须)，以=或Tab或空格分隔。`n导入pinyin、wubi86、wubi98词库时，编码非必须，可自动生成。各行格式一致，格式如下：`n五笔86：`naaaa	恭恭敬敬	劳斯莱斯	花花草草 （无weight）`nggtt	五笔	5`n`n拼音、双拼：`npin'yin	拼音	16`n燕子输入法	20`n`nhotstrings、functions为JSON格式,换行\n Tab\t：`n[""key"",""value"",""comment""]"
 			,导出词库:"导出当前词库查询后的所有词条，存放在" A_ScriptDir,删除词库:"删除当前选择的词库",整理词库:"对词库进行去重排序，保留最大权重",压缩词库:"词库在删除词条后空间没有释放，使用压缩词库释放空间",TableName:"选择相应的词库进行管理或导出`n双击对应区域进入编辑模式，进行词条修改。`n右键新建、删除词条，魔法创建可添加多个词条或创建带格式的文本`n点击右下角可设置每页显示的词条数",citiao:"精确查找输入的编码、词条、备注，_代表一位任意字符、%代表任意位字符"
+			,ShowFZM:"为候选项附上自身的辅助码", ShowLogo:"在屏幕顶端显示一条细的彩带用以指示当前的输入语言（鼠标可穿透，不会影响您在屏幕顶部的操作）", FirstZi:"选中此项则输入的辅助码仅针对每个候选词中首字进行匹配筛选；`n取消勾选则对于多字词会执行“针对词中任意单字或有序但不必连续的两个字”进行匹配的策略", ConnectIMEandCursor:"对VSCode插件IMEandCursor提供支持，非IMEandCursor用户可关闭此项", tfuzhuma:"在候选框中输入数字6-0（表示声调轻声到四声）或大写字母自动进入间接辅助码模式"
 			,StatusBar:"点击状态栏右下角设置每页显示词条数，PgUp、PgDn为翻页键",Useless:"隐藏词频低于0的词条，仅在无其他候选项的时候出现",Tofirst:"选择后的词条到当前编码的第一位",ResultsLV:{}}
 	If !VarSetCapacity(buf)
 		VarSetCapacity(buf, 20 * (A_IsUnicode ? 2 : 1))
