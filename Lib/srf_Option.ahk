@@ -178,11 +178,20 @@ Option_Adv:
 	Gui, 3:Add, Text, x+5 yp+5, 燕子输入法
 	Gui, 3:Font, s10 norm , %GUIFont%
 	Gui, 3:Add, Text, x+0 yp+7, % " (" A_PtrSize*8 "位 Beta)"
-	Gui, 3:Add, Text, x+20, % "版本：" srf_default_value["Version","Version"] " (2021.11.27)"
+	Gui, 3:Add, Text, x+20, % "版本：" srf_default_value["Version","Version"] " (2024.3.24)"
 	Gui, 3:Add, GroupBox, xm+15 y+10 w%tvar% r4, 简介
-	Gui, 3:Add, Text, % "xm+35 yp+25 w" tvar-30, 燕子输入法改编自影子输入法。`n影子输入法是由河许人发起，天黑请闭眼深度开发的简单、简洁、高度自定义输入法。影子输入法起源于AutoHotkey高手群 Hello_srf开发的柚子输入法，融合了承影和jip输入法的理念。 
+	Gui, 3:Add, Text, % "xm+35 yp+25 w" tvar-30, 燕子输入法改编自影子输入法。主要是编制了新的辅助码表并重写了辅助码的输入和筛选逻辑，意在通过更自然和强包容性的设计彻底去除辅助码的使用门槛，从而让更多人受益。`n此外，燕子输入法还添加了中英文模式指示器并内置了对 VS Code 插件 IME-and-Cursor（v1.4+）的支持。`n燕子的前身影子输入法是 “由河许人发起，天黑请闭眼深度开发的简单、简洁、高度自定义的输入法。影子输入法起源于 AutoHotkey 高手群 Hello_srf 开发的柚子输入法，融合了承影和 jip 输入法的理念”。 
 	GuiControlGet, tempP, 3:Pos, Static29
 	GuiControl, 3:Move, 简介, % "h" tempPh+40
+	Gui, 3:Add, Text, xm+10 y+25 w80 Right, 源代码:
+	Gui, 3:Add, Link, x+10 yp, <a href="https://github.com/beishanyufu/Yanzi-IME">https://github.com/beishanyufu/Yanzi-IME</a>
+	Gui, 3:Add, Picture, xm+15 yp w20 h-1 Icon11, %DataPath%Yzime.icl
+	Gui, 3:Add, Picture, xm+15 y+15 w20 h-1 Icon12, %DataPath%Yzime.icl
+	Gui, 3:Font, s10 Bold, %GUIFont%
+	Gui, 3:Add, Text, x+10 yp, 感谢
+	Gui, 3:Font, s10 norm, %GUIFont%
+	Gui, 3:Add, Text, % "y+5 w" tvar-60, 感谢影子输入法和柚子输入法的创作者们！如果把你们完成的工作比作一间大房子，本输入法就是筑巢于房檐下的一只小燕子~
+	
 	If (Inputscheme~="sp$|pinyin"){
 		GuiControl, 3:, 拼音类, 1
 		_Inputscheme:=pinyinec[Inputscheme]
@@ -475,7 +484,7 @@ Return
 
 switchtab:
 	GuiControlGet, tvar, , SysTabControl321
-	GuiControlGet, tempP, 3:Pos, % (tvar=3?"候选窗口":tvar=2?"输入法热键":tvar=4?"命令管理":tvar=1?"其他选项":tvar=5?"Button66":"Button67")
+	GuiControlGet, tempP, 3:Pos, % (tvar=3?"候选窗口":tvar=2?"输入法热键":tvar=4?"命令管理":tvar=1?"其他选项":tvar=5?"Button66":"Static34")
 	GuiControl, 3:Move, SysTabControl321, % "h" tempPy+tempPh
 	Gui, 3:Show, AutoSize
 Return
@@ -842,7 +851,7 @@ WM_MOUSEMOVE(wParam, lParam, Msg, Hwnd){
 			,Showquanpin:"显示双拼对应的全拼编码",CloudInput:"候选中插入云输入的结果，显示速度与网络速度相关`n获取失败或与本地词条重复时不显示",SaveCloud:"勾选自学习后选择云输入的候选并记录到词库`n不需要开启自学习",fuzhuma:"正常输入拼音后，再直接敲入一个小写字母代表的部首辅助码协助筛选候选项",TextFont:"设置候选项界面的字体",FontSize:"设置候选项字体大小",LogoSize:"设置中英文状态指示器的粗细",ToolTipStyle:"设置候选界面的样式，ToolTip兼容性好速度慢，Gdip速度更快适合Win7及以上的系统"
 			,Lockedposition:"固定候选界面不随光标移动，可鼠标拖动至适合位置",srfhotkey:"设置输入法中/英文状态切换热键，`nCtrl对应的热键前缀为 ^`nShift对应的热键前缀为 +`nAlt对应的热键前缀为 !`nWin对应的热键前缀为 #`n如设置切换键为Ctrl + Space，填入^Space再点设置`n更多按键名可查阅ahk中文帮助<目录/热键>、<索引/key list>部分",Double:"勾选后双击切换输入模式，LCtrl+LAlt+F12可禁用/恢复所有热键",FuncLV:"内置函数命令，可输入命令名加/使用，可自定义设置命令名",导入词库:"导入的码表文件是以待导入的词库名为前缀的文本文档(如wubi86_1.txt;zhengma.txt)，推荐编码为UTF-8-BOM。`n每行包括编码、词条、权重或备注(非必须)，以=或Tab或空格分隔。`n导入pinyin、wubi86、wubi98词库时，编码非必须，可自动生成。各行格式一致，格式如下：`n五笔86：`naaaa	恭恭敬敬	劳斯莱斯	花花草草 （无weight）`nggtt	五笔	5`n`n拼音、双拼：`npin'yin	拼音	16`n燕子输入法	20`n`nhotstrings、functions为JSON格式,换行\n Tab\t：`n[""key"",""value"",""comment""]"
 			,导出词库:"导出当前词库查询后的所有词条，存放在" A_ScriptDir,删除词库:"删除当前选择的词库",整理词库:"对词库进行去重排序，保留最大权重",压缩词库:"词库在删除词条后空间没有释放，使用压缩词库释放空间",TableName:"选择相应的词库进行管理或导出`n双击对应区域进入编辑模式，进行词条修改。`n右键新建、删除词条，魔法创建可添加多个词条或创建带格式的文本`n点击右下角可设置每页显示的词条数",citiao:"精确查找输入的编码、词条、备注，_代表一位任意字符、%代表任意位字符"
-			,ShowFZM:"为候选项附上自身的辅助码", ShowLogo:"在屏幕顶端显示一条细的彩带用以指示当前的输入语言（鼠标可穿透，不会影响您在屏幕顶部的操作）", FirstZi:"选中此项则输入的辅助码仅针对每个候选词中首字进行匹配筛选；`n取消勾选则对于多字词会执行“针对词中任意单字或有序但不必连续的两个字”进行匹配的策略", ConnectIMEandCursor:"对VSCode插件IMEandCursor提供支持，非IMEandCursor用户可关闭此项", tfuzhuma:"在候选框中输入数字6-0（表示声调轻声到四声）或大写字母自动进入间接辅助码模式"
+			,ShowFZM:"为候选项附上自身的辅助码", ShowLogo:"在屏幕顶端显示一条细的彩带用以指示当前的输入语言（鼠标可穿透，不会影响您在屏幕顶部的操作）", FirstZi:"选中此项则输入的辅助码仅针对每个候选词中的首字进行匹配筛选；`n取消勾选则会尝试用输入的一位或两位辅助码匹配词中的任意单字，`n如果是两位辅助码则还会尝试按先后顺序分别匹配词中的任意两个字", ConnectIMEandCursor:"对VSCode插件IMEandCursor提供支持，非IMEandCursor用户可关闭此项", tfuzhuma:"在候选框中输入数字6-0（表示声调轻声到四声）或大写字母自动进入间接辅助码模式"
 			,StatusBar:"点击状态栏右下角设置每页显示词条数，PgUp、PgDn为翻页键",Useless:"隐藏词频低于0的词条，仅在无其他候选项的时候出现",Tofirst:"选择后的词条到当前编码的第一位",ResultsLV:{}}
 	If !VarSetCapacity(buf)
 		VarSetCapacity(buf, 20 * (A_IsUnicode ? 2 : 1))

@@ -12,12 +12,12 @@ srf_init:
 	global srf_default_value, Gbuffer, DataPath:=A_ScriptDir "\Data\", Yzimeini:=class_EasyIni(DataPath "Yzime.ini"), DllFolder:=A_ScriptDir "\Lib\Dll_" (A_PtrSize=4?"x86":"x64"), TSFMem:=new MemMap("WXppbWVUU0ZNRU0=")
 		, AhkPath:=A_IsCompiled?A_ScriptDir "\Yzime.exe":A_AhkPath, YzimePID:=DllCall("GetCurrentProcessId"), SystemDefaultFont:=StrGet(&SystemDefaultFont + 52)
 	srf_default_value:={Settings:{Startingup:0, Autoupdatefg:0, UIAccess:0, CloudInput:0, DebugLevel:1, fuzhuma:0, SendDelay:0, ClipHistory:0, Imagine:0, MemoryDB:0, Settingsbak:"", MouseCross:0, dwxg:0
-		, Magicstring:0, Superrun:0, Wordfrequency:0, fixedword:0, Learning:0, Inputscheme:"pinyin", chaojijp:0, Traditional:0, Showquanpin:0, mhy:"0000000000", fyfz:0, bmhg:0, dgsp:0, FirstNotSave:0
+		, Magicstring:0, Superrun:0, Wordfrequency:1, fixedword:0, Learning:0, Inputscheme:"pinyin", chaojijp:0, Traditional:0, Showquanpin:0, mhy:"0000000000", fyfz:0, bmhg:0, dgsp:0, FirstNotSave:0
 		, lspy:0, simasp:1, wumaqc:1, wumasp:1, Different:1, IMEmode:2, ClipWindows:"", IMECnWindows:"", IMEEnWindows:"", EnSymbol:0, SaveCloud:0, ShowCdode:0, Singleword:0, zigen:0, TSFmode:0
 	, decfre:0, Tofirst:0, Useless:0, tfuzhuma:1, ShowFZM:0, FirstZi:1, ConnectIMEandCursor:1, ShowLogo:1}
 		, Func:{CustomFuncName:"{""fanyi"":""fy"",""label"":""l"",""magic"":""s"",""mode"":""m"",""run"":""r"",""scheme"":""sc"",""soso"":""ss""}"}
-		, GuiStyle:{TextFont:SystemDefaultFont, SymbolFont:"Segoe UI Symbol", FontBold:0, FontSize:20, BorderColor:"444444", CodeColor:"C9E47E", TextColor:"EEECE2"
-		, BackgroundColor:"444444", ListNum:5, Textdirection:"Horizontal", FocusBackColor:"CAE682", FocusColor:"070C0D"
+		, GuiStyle:{TextFont:SystemDefaultFont, SymbolFont:"Segoe UI Symbol", FontBold:0, FontSize:20, BorderColor:"F9ECE2", CodeColor:"0080FF", TextColor:"0080FF"
+		, BackgroundColor:"FFFFFF", ListNum:5, Textdirection:"Horizontal", FocusBackColor:"FFFFFF", FocusColor:"FF8000"
 		, LogoSize:8, ToolTipStyle:(A_OSVersion="WIN_XP"?1:2), Lockedposition:0}
 		, Hotkey:{Double:0, Switch:"Shift", Enterfg:2, Escfg:1, Shiftfg:3, fanyefg:",.", 23hx:"", ycdzfg:""}
 		, DBFile:{main:"Data\ciku.db", extend:"Data\ciku_extend.db"}
@@ -450,9 +450,11 @@ TRAYMENU:
 	; Menu, Tray, Icon, 工具, %DataPath%Yzime.icl, 11
 	; Menu, Tray, Add, 更新, srfUpdate
 	; Menu, Tray, Icon, 更新, %DataPath%Yzime.icl, 5
+	Menu, Games, Add, 就怕害虫有文化（孵化中）, DetectBugs
+	Menu, Tray, Add, 游戏, :Games
+	Menu, Tray, Icon, 游戏, %DataPath%Yzime.icl, 11
 	Menu, Tray, Add, 帮助, Help
-	Menu, Tray, Icon, 帮助, %DataPath%Yzime.icl, 6
-	
+	Menu, Tray, Icon, 帮助, %DataPath%Yzime.icl, 6	
 	Menu, Tray, Add
 	; Menu, Tray, Add, 禁用, srfsuspend
 	; Menu, Tray, Icon, 禁用, %DataPath%Yzime.icl, 14
@@ -477,7 +479,9 @@ Return
 AhkSpy:
 	Run, % """" AhkPath """ """ A_ScriptDir "\Lib\tools\AhkSpy.ahk""", %A_ScriptDir%
 Return
-;加载logo
+DetectBugs:
+	MsgBox, 0x40, 燕子输入法之就怕害虫有文化（孵化中）, % "哎呀，还没孵出来呢——等我出壳之后再跟你玩ヾ(≧▽≦*)o"
+Return
 LoadLogo:
 	SetYzLogo(srf_mode)
 Return
@@ -535,29 +539,45 @@ Help:
 	; 	Return
 	; }
 	Gui, 96:Margin, 20, 20
-	Gui, 96:Add, Picture, xm w13 h-1 Icon1, %DataPath%Yzime.icl
-	Gui, 96:Font, s11 Bold, %GUIFont%
-	Gui, 96:Add, Text, x+10 yp, 简易帮助
-	Gui, 96:Font
+	; Gui, 96:Add, Picture, xm w18 h-1 Icon1, %DataPath%Yzime.icl
+	; Gui, 96:Font, s13 Bold c888888, %GUIFont%
+	; Gui, 96:Add, Text, x+10 yp, 简易帮助
+	; Gui, 96:Font
 	Gui, 96:Font, s11, %GUIFont%
-	Gui, 96:Add, Text, y+5, LShift切换输入模式
-	Gui, 96:Add, Text, y+5, Space首选上屏, Enter英文字符上屏
-	Gui, 96:Add, Text, y+5, /键 内置功能键
-	Gui, 96:Add, Text, y+5, 1、2、3、……、，、。候选上屏
-	Gui, 96:Add, Text, y+5, Ctrl + 1、2、3、……调节对应项到首选，`n长按调至指定位置
-	Gui, 96:Add, Text, y+5, Ctrl + Alt + 1、2、3、……删除对应词条
-	Gui, 96:Add, Text, y+5, Left、Right、Ctrl + 字母 调整插入位置
-	Gui, 96:Add, Text, y+5, Ctrl + = 快捷造词
-	Gui, 96:Add, Text, y+5, Ctrl + Shift + Alt + F1 帮助
-	Gui, 96:Add, Text, y+5, 在选项、词库管理的控件处停留0.5秒`n显示详细说明
-	Gui, 96:Add, Text, y+5, 选项 - 控制 - 命令管理 - 模式切换`n有更多便捷的设置
+	Gui, 96:Font, s11 Bold, %GUIFont%
+	Gui, 96:Add, Text, y+5 cRed, 找到我
+	Gui, 96:Font, s11 norm, %GUIFont%
+	Gui, 96:Add, Text, y+5, - 我在屏幕底部任务栏右侧的托盘区中，就是显示为“中”或“英”的图标（之一），右键点击会打开选项菜单
+	Gui, 96:Add, Text, y+5, - 屏幕顶部的彩条也是我，鼠标可穿透，所以不能操作，仅用来指示中英文输入状态（可在设置中调整粗细或关闭）
+	Gui, 96:Font, s11 Bold, %GUIFont%
+	Gui, 96:Add, Text, y+5 cRed, 快捷键
+	Gui, 96:Font, s11 norm, %GUIFont%
+	Gui, 96:Add, Text, y+5, 【Shift】切换输入模式（可在选项中设置）
+	Gui, 96:Add, Text, y+5, 【Space】上屏首选；【Enter】上屏键入的全部字符（含间接辅助码，但不包括小燕子:）
+	Gui, 96:Add, Text, y+5, 【, .】翻页（可设置）。不过——
+	Gui, 96:Font, s11 italic, %GUIFont%
+	Gui, 96:Add, Text, y+5, 更建议您在需要翻页时优先使用辅助码，因为“筛选”远比“翻找”来得轻松高效。问题是辅助码的使用一直比较小众，
+	Gui, 96:Add, Link, y+5, 而燕子尝试凭借“高易用性”将其带给大众。详见 <a href="https://github.com/beishanyufu/Yanzi-IME#燕子输入法">README.md 中 “燕子辅助码” 一节 </a> 
+	Gui, 96:Font, s11 norm, %GUIFont%
+	Gui, 96:Add, Text, y+5, 【/】输入特殊符号等（输入顿号用【\】键）
+	Gui, 96:Add, Text, y+5, 【Ctrl + 1、2、3、……】调节对应项到首选，长按调至指定位置
+	Gui, 96:Add, Text, y+5, 【Ctrl + Alt + 1、2、3、……】删除对应词条
+	; Gui, 96:Add, Text, y+5, 【Left、Right、Ctrl + 字母】调整插入位置
+	; Gui, 96:Add, Text, y+5, 【Ctrl + =】快捷造词
+	Gui, 96:Font, s11 Bold, %GUIFont%
+	Gui, 96:Add, Text, y+5 cRed, 查帮助
+	Gui, 96:Font, s11 norm, %GUIFont%
+	Gui, 96:Add, Text, y+5, - 在选项或词库管理窗口中，鼠标移至控件上并驻留会显示详细说明
+	Gui, 96:Add, Text, y+5, - 您可以随时右键点击本输入法在右下方托盘中的图标，从弹出的菜单中选择“帮助”，`n  或使用快捷键【Ctrl + Shift + Alt + F1】来打开此帮助窗口
+	Gui, 96:Add, Link, y+5, - <a href="https://github.com/beishanyufu/Yanzi-IME">燕子输入法详细说明和源码 https://github.com/beishanyufu/Yanzi-IME</a>
+
 	; Gui, 96:Add, Picture, xm y+20 w13 h-1 Icon11, %DataPath%Yzime.icl
 	; Gui, 96:Font, s11 Bold, %GUIFont%
 	; Gui, 96:Add, Text, x+10 yp, 详细帮助
 	Gui, 96:Font
 	Gui, 96:Font, s11, %GUIFont%
 	; Gui, 96:Add, Link, y+5, <a href="https://gitee.com/orz707/Yzime/wikis">影子帮助文档</a>
-	Gui, 96:Show, , 燕子输入法 帮助
+	Gui, 96:Show, , 燕子输入法 简易帮助
 Return
 
 _SetYzLogo(){
