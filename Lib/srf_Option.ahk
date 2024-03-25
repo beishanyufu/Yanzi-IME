@@ -157,7 +157,7 @@ Option_Adv:
 	Gui, 3:Add, CheckBox, xp+15 yp+25 gini_Settings vSuperrun Checked%Superrun%, 超级命令
 	Gui, 3:Add, CheckBox, x+15 gini_Settings vMagicstring Checked%Magicstring%, 魔法字符串
 	Gui, 3:Add, CheckBox, x+15 gini_Settings vClipHistory Checked%ClipHistory%, 剪贴板历史
-	Gui, 3:Add, CheckBox, x+15 gini_Settings vMouseCross Checked%MouseCross%, 鼠标划词
+	Gui, 3:Add, CheckBox, x+15 gini_Settings vMouseCross Disabled Checked%MouseCross%, 鼠标划词
 	; Gui, 3:Add, CheckBox, xm+30 yp+25 gini_Settings vRobot Checked%Robot%, Robot
 	Gui, 3:Add, GroupBox, xm+15 y+20 w%tvar% r10, 命令管理
 	Gui, 3:Add, ListView, % "xm+30 yp+25 w" tvar-30 " r11 vFuncLV -ReadOnly AltSubmit gFuncLV hwndHFuncLV"

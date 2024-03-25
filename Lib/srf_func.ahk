@@ -1093,14 +1093,14 @@ soso_select(source,search:=""){
 	Run, % sosourl[source] JScript().("encodeURIComponent('" search "')")
 }
 soso_list(str:=""){
-	str:="(.*)" RegExReplace(str, "(.)", "$1(.*)")
-	m_list:=[{0:"{Func}",1:"soso_select(baidu)",3:"百度搜索",4:"baidusousuo"},{0:"{Func}",1:"soso_select(bing)",3:"bing搜索",4:"bingsousuo"}
-		,{0:"{Func}",1:"fanyi_select(google)",3:"谷歌翻译",4:"gugefanyi"},{0:"{Func}",1:"fanyi_select(youdao)",3:"有道翻译",4:"youdaofanyi"}
-		,{0:"{Func}",1:"soso_select(weibo)",3:"微博搜索",4:"weibosousuo"},{0:"{Func}",1:"soso_select(google)",3:"谷歌搜索",4:"gugesousuo"}]
-	Loop % len:=m_list.Length()
-		If !(m_list[len+1-A_Index,4]~=str)
-			m_list.RemoveAt(len+1-A_Index)
-	Return m_list
+	; str:="(.*)" RegExReplace(str, "(.)", "$1(.*)")
+	; m_list:=[{0:"{Func}",1:"soso_select(baidu)",3:"百度搜索",4:"baidusousuo"},{0:"{Func}",1:"soso_select(bing)",3:"bing搜索",4:"bingsousuo"}
+	; 	,{0:"{Func}",1:"fanyi_select(google)",3:"谷歌翻译",4:"gugefanyi"},{0:"{Func}",1:"fanyi_select(youdao)",3:"有道翻译",4:"youdaofanyi"}
+	; 	,{0:"{Func}",1:"soso_select(weibo)",3:"微博搜索",4:"weibosousuo"},{0:"{Func}",1:"soso_select(google)",3:"谷歌搜索",4:"gugesousuo"}]
+	; Loop % len:=m_list.Length()
+	; 	If !(m_list[len+1-A_Index,4]~=str)
+	; 		m_list.RemoveAt(len+1-A_Index)
+	; Return m_list
 }
 fanyi_select(apitype:="youdao",KeyWord:=""){
 	static apitype_

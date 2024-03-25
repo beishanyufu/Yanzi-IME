@@ -245,14 +245,14 @@ SendRequest(url, Method="GET", postData=""){
 }
 ; 运行JS脚本
 JScript(update := false){
-	static doc, eval
-	if (!doc || update) {
-		ComObjError(1)
-		Script := getJSscript()
-		doc:=ComObjCreate("htmlfile"), doc.write("<meta http-equiv='X-UA-Compatible' content='IE=9'><body><script>" Script "</script></body>")
-		Return eval := ObjBindMethod(doc.parentWindow, "eval")
-	}
-	Return eval
+	; static doc, eval
+	; if (!doc || update) {
+	; 	ComObjError(1)
+	; 	Script := getJSscript()
+	; 	doc:=ComObjCreate("htmlfile"), doc.write("<meta http-equiv='X-UA-Compatible' content='IE=9'><body><script>" Script "</script></body>")
+	; 	Return eval := ObjBindMethod(doc.parentWindow, "eval")
+	; }
+	; Return eval
 }
 ; 7z解压
 7Zip(source, dest, wait:=1){
