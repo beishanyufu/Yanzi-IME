@@ -557,7 +557,7 @@ Help:
 	Gui, 96:Add, Text, y+5, 【, .】翻页（可设置）。不过——
 	Gui, 96:Font, s11 italic, %GUIFont%
 	Gui, 96:Add, Text, y+5, 更建议您在需要翻页时优先使用辅助码，因为“筛选”远比“翻找”来得轻松高效。问题是辅助码的使用一直比较小众，
-	Gui, 96:Add, Link, y+5, 而燕子尝试凭借“高易用性”将其带给大众。详见 <a href="https://github.com/beishanyufu/Yanzi-IME#燕子输入法">README.md 中 “燕子辅助码” 一节 </a> 
+	Gui, 96:Add, Link, y+5, 而燕子尝试凭借“高易用性”将其带给大众。详见 <a href="https://github.com/beishanyufu/Yanzi-IME#燕子辅助码">README.md 中 “燕子辅助码” 一节 </a> 
 	Gui, 96:Font, s11 norm, %GUIFont%
 	Gui, 96:Add, Text, y+5, 【/】输入特殊符号等（输入顿号用【\】键）
 	Gui, 96:Add, Text, y+5, 【Ctrl + 1、2、3、……】调节对应项到首选，长按调至指定位置
