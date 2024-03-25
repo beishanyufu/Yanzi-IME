@@ -271,6 +271,7 @@ srfsuspend:
 	Gosub srf_value_off
 	If (A_IsSuspended){
 		SetYzLogo(srf_mode:=0, 0)
+		DirectIMEandCursor(srf_mode)
 		; Menu, Tray, Icon, %DataPath%Yzime.icl, 1, 1
 		Menu Tray, NoIcon
 		Menu, Tray, Rename, 8&, 恢复
@@ -448,6 +449,7 @@ Return
 				Gosub srf_value_off
 				If (Shiftfg=3){
 					SetYzLogo(srf_mode:=0, 1)
+					DirectIMEandCursor(srf_mode)
 					SetTimer, ToolTipInputStatus, -10
 				}
 			} Else
@@ -462,12 +464,14 @@ Return
 				srf_mode:=Learnfg:=0
 				Gosub srf_value_off
 				SetYzLogo(srf_mode:=0, 1)
+				DirectIMEandCursor(srf_mode)
 				SetTimer, ToolTipInputStatus, -10
 			}
 		} Else If (A_ThisHotkey="Shift"){
 			Learnfg:=0
 			Gosub srf_value_off
 			SetYzLogo(srf_mode:=0, 1)
+			DirectIMEandCursor(srf_mode)
 			SetTimer, ToolTipInputStatus, -10
 		}	
 	Return
@@ -493,11 +497,13 @@ Return
 Esc::
 	If (!srf_inputing){
 		SetYzLogo(srf_mode:=0, 1)
+		DirectIMEandCursor(srf_mode)
 		SetTimer, ToolTipInputStatus, -10
 	}
 	Gosub srf_value_off
 	If (srf_mode&&Escfg=3){
 		SetYzLogo(srf_mode:=0, 1)
+		DirectIMEandCursor(srf_mode)
 		SetTimer, ToolTipInputStatus, -10
 	}
 Return
@@ -911,7 +917,11 @@ CheckClipboard(DataType) {
 		SwitchTo(msg1)
 		OnClipboardChange("ClipChanged",0)
 		OnClipboardChange("CheckClipboard",0) 
-		Clipboard := SubStr(Clipboard,1,-StrLen(msg))
+		Try {
+			Clipboard := SubStr(Clipboard,1,-StrLen(msg))
+		} Catch e {
+			OutputDebug("Error in " e.What ", which was called at line " e.Line ", Message:" e.Message ", Extra:" e.Extra, 1)
+		}
 		OnClipboardChange("ClipChanged",1)
 		OnClipboardChange("CheckClipboard",-1)
 		return 1

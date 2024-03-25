@@ -644,10 +644,10 @@ DirectIMEandCursor(fg){
 		; Send, % "^+#!" (fg?"c":"e")
 		If (fg){
 			; OutputDebug, toCh `n
-			send, ^+#!c
+			send, +#!c
 		} Else {
 			; OutputDebug, toEn `n
-			send, ^+#!e
+			send, +#!e
 		}
 	}
 }
