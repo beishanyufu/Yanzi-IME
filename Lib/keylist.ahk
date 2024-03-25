@@ -915,6 +915,7 @@ CheckClipboard(DataType) {
 	; OutputDebug, % DataType " from check" "`n"
 	if(DataType=1 && WinActive("ahk_exe Code.exe") && RegExMatch(Clipboard, "Ime&Cursor:PleaseSwitchTo([01])$", msg)){
 		SwitchTo(msg1)
+		OutputDebug("收到：" Clipboard, 1)
 		OnClipboardChange("ClipChanged",0)
 		OnClipboardChange("CheckClipboard",0) 
 		Try {
@@ -931,7 +932,9 @@ CheckClipboard(DataType) {
 SwitchTo(to){
 	local
 	global srf_mode
-	if(to^srf_mode){
+	If(to^srf_mode){
 		gosub srfSwitch
+	} Else {
+		DirectIMEandCursor(srf_mode)
 	}
 }
