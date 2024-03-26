@@ -146,7 +146,7 @@ _EventProc(phook, Msg, Hwnd){
 		curwininfo := {hwnd: Hwnd, tick: A_TickCount}
 	}
 	If (msg = 3 && firstEnterVSCode && WinActive("Visual Studio Code")) {
-		DirectIMEandCursor(srf_mode)
+		SetTimer, _DirectIMEandCursor, -200
 		firstEnterVSCode:=0
 	}
 	Switch Msg
@@ -655,3 +655,7 @@ DirectIMEandCursor(fg){
 		}
 	}
 }
+
+_DirectIMEandCursor:
+    DirectIMEandCursor(srf_mode)
+Return
