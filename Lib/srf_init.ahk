@@ -137,13 +137,17 @@ DownloadRes(){
 _EventProc(phook, Msg, Hwnd){
 	global YzimePID, AppIMEtable, Different, srf_mode, IMEmode, srf_inputing, SendDelay
 		, SendDelaymode, IMEEnWindows, IMECnWindows, ClipWindows, TSFmode, curwininfo
-	static htype:=0, lastexe, lastmode:=-1
+	static htype:=0, lastexe, lastmode:=-1, firstEnterVSCode:=1
 	If (A_IsSuspended || (Msg = 3 && hwnd != WinExist("A")))
 		Return
 	if (Msg = 3) {
 		if (TSFmode && curwininfo.tick = 0 && curwininfo.hwnd)
 			WM_TSFMSG(404, 0)
 		curwininfo := {hwnd: Hwnd, tick: A_TickCount}
+	}
+	If (msg = 3 && firstEnterVSCode && WinActive("Visual Studio Code")) {
+		DirectIMEandCursor(srf_mode)
+		firstEnterVSCode:=0
 	}
 	Switch Msg
 	{
