@@ -551,7 +551,7 @@ Help:
 	Gui, 96:Font, s11 Bold, %GUIFont%
 	Gui, 96:Add, Text, y+5 cRed, 找到我
 	Gui, 96:Font, s11 norm, %GUIFont%
-	Gui, 96:Add, Text, y+5, - 我在屏幕底部任务栏右侧的托盘区中，就是显示为“中”或“英”的图标（之一），右键点击会打开选项菜单
+	Gui, 96:Add, Text, y+5, - 我在右下方的托盘区，就是显示为“中”或“英”的图标（之一）,如被隐藏可以拖出来。右键点击会弹出选项菜单
 	Gui, 96:Add, Text, y+5, - 屏幕顶部的彩条也是我，鼠标可穿透，所以不能操作，仅用来指示中英文输入状态（可在设置中调整粗细或关闭）
 	Gui, 96:Font, s11 Bold, %GUIFont%
 	Gui, 96:Add, Text, y+5 cRed, 快捷键
