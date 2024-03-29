@@ -137,17 +137,13 @@ DownloadRes(){
 _EventProc(phook, Msg, Hwnd){
 	global YzimePID, AppIMEtable, Different, srf_mode, IMEmode, srf_inputing, SendDelay
 		, SendDelaymode, IMEEnWindows, IMECnWindows, ClipWindows, TSFmode, curwininfo
-	static htype:=0, lastexe, lastmode:=-1, firstEnterVSCode:=1
+	static htype:=0, lastexe, lastmode:=-1
 	If (A_IsSuspended || (Msg = 3 && hwnd != WinExist("A")))
 		Return
 	if (Msg = 3) {
 		if (TSFmode && curwininfo.tick = 0 && curwininfo.hwnd)
 			WM_TSFMSG(404, 0)
 		curwininfo := {hwnd: Hwnd, tick: A_TickCount}
-	}
-	If (msg = 3 && firstEnterVSCode && WinActive("Visual Studio Code")) {
-		SetTimer, _DirectIMEandCursor, -200
-		firstEnterVSCode:=0
 	}
 	Switch Msg
 	{
@@ -196,6 +192,8 @@ _EventProc(phook, Msg, Hwnd){
 					AppIMEtable[activeexe]:=IMEmode-1
 					If (!srf_inputing&&srf_mode!=IMEmode-1)
 						Gosub Switchstate
+					Else If (activeexe="Code.exe")
+						DirectIMEandCursor(srf_mode)
 				} Else If (!srf_inputing&&AppIMEtable[activeexe]!=srf_mode)
 					Gosub Switchstate
 			Case -4,-3:
@@ -655,7 +653,3 @@ DirectIMEandCursor(fg){
 		}
 	}
 }
-
-_DirectIMEandCursor:
-    DirectIMEandCursor(srf_mode)
-Return
