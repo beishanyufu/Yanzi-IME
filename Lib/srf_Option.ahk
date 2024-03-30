@@ -52,7 +52,7 @@ Option_Adv:
 	GuiControl, 3:Move, 输入模式, % "h" tempPh*2+35
 	Gui, 3:Add, GroupBox, xm+15 y+15 w%tvar% h70, 输入方案
 	Gui, 3:Add, Radio, xp+15 yp+25 gshurulei AltSubmit, 拼音类
-	Gui, 3:Add, Radio, x+20 yp gshurulei AltSubmit, 形码类
+	Gui, 3:Add, Radio, x+20 yp gshurulei AltSubmit Disabled, 形码类
 	Gui, 3:Add, DropDownList, x+5 yp-5 w110 gsurufangan v_Inputscheme, % Trim(pinyinlist,"|")
 	Gui, 3:Add, Button, % "x+30 yp-1 gmhymanager Hidden" (shurulei!="pinyin"), 模糊音设置
 	GuiControlGet, tempP, 3:Pos, 拼音类
