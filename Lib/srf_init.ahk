@@ -12,11 +12,11 @@ srf_init:
 	global srf_default_value, Gbuffer, DataPath:=A_ScriptDir "\Data\", Yzimeini:=class_EasyIni(DataPath "Yzime.ini"), DllFolder:=A_ScriptDir "\Lib\Dll_" (A_PtrSize=4?"x86":"x64"), TSFMem:=new MemMap("WXppbWVUU0ZNRU0=")
 		, AhkPath:=A_IsCompiled?A_ScriptDir "\Yzime.exe":A_AhkPath, YzimePID:=DllCall("GetCurrentProcessId"), SystemDefaultFont:=StrGet(&SystemDefaultFont + 52)
 	srf_default_value:={Settings:{Startingup:0, Autoupdatefg:0, UIAccess:0, CloudInput:0, DebugLevel:1, fuzhuma:0, SendDelay:0, ClipHistory:0, Imagine:0, MemoryDB:0, Settingsbak:"", MouseCross:0, dwxg:0
-		, Magicstring:0, Superrun:0, Wordfrequency:1, fixedword:0, Learning:0, Inputscheme:"pinyin", chaojijp:0, Traditional:0, Showquanpin:0, mhy:"0000000000", fyfz:0, bmhg:0, dgsp:0, FirstNotSave:0
+		, Magicstring:0, Superrun:0, Wordfrequency:1, fixedword:0, Learning:1, Inputscheme:"pinyin", chaojijp:0, Traditional:0, Showquanpin:0, mhy:"0000000000", fyfz:0, bmhg:0, dgsp:0, FirstNotSave:0
 		, lspy:0, simasp:1, wumaqc:1, wumasp:1, Different:1, IMEmode:2, ClipWindows:"", IMECnWindows:"", IMEEnWindows:"", EnSymbol:0, SaveCloud:0, ShowCdode:0, Singleword:0, zigen:0, TSFmode:0
 	, decfre:0, Tofirst:0, Useless:0, tfuzhuma:1, ShowFZM:0, FirstZi:1, ConnectIMEandCursor:1, ShowLogo:1}
 		, Func:{CustomFuncName:"{""fanyi"":""fy"",""label"":""l"",""magic"":""s"",""mode"":""m"",""run"":""r"",""scheme"":""sc"",""soso"":""ss""}"}
-		, GuiStyle:{TextFont:SystemDefaultFont, SymbolFont:"Segoe UI Symbol", FontBold:0, FontSize:20, BorderColor:"F9ECE2", CodeColor:"0080FF", TextColor:"0080FF"
+		, GuiStyle:{TextFont:SystemDefaultFont, SymbolFont:"Segoe UI Symbol", FontBold:0, FontSize:20, BorderColor:"BDDEFF", CodeColor:"0B74DD", TextColor:"2B95FF"
 		, BackgroundColor:"FFFFFF", ListNum:5, Textdirection:"Horizontal", FocusBackColor:"FFFFFF", FocusColor:"FF8000"
 		, LogoSize:8, ToolTipStyle:(A_OSVersion="WIN_XP"?1:2), Lockedposition:0}
 		, Hotkey:{Double:0, Switch:"Shift", Enterfg:2, Escfg:1, Shiftfg:3, fanyefg:",.", 23hx:"", ycdzfg:""}
@@ -561,6 +561,7 @@ Help:
 	Gui, 96:Add, Text, y+5, 更建议您在需要翻页时优先使用辅助码，因为“筛选”远比“翻找”来得轻松高效。问题是辅助码的使用一直比较小众，
 	Gui, 96:Add, Link, y+5, 而燕子尝试凭借“高易用性”将其带给大众。详见 <a href="https://github.com/beishanyufu/Yanzi-IME#燕子辅助码">README.md 中 “燕子辅助码” 一节 </a> 
 	Gui, 96:Font, s11 norm, %GUIFont%
+	Gui, 96:Add, Text, y+5, 【;】（使用全拼时）插入隔音符，调整音节划分（如：xian<->xi'an，fang'an<->fan'gan）
 	Gui, 96:Add, Text, y+5, 【/】输入特殊符号等（输入顿号用【\】键）
 	Gui, 96:Add, Text, y+5, 【Ctrl + 1、2、3、……】调节对应项到首选，长按调至指定位置
 	Gui, 96:Add, Text, y+5, 【Ctrl + Alt + 1、2、3、……】删除对应词条
@@ -579,7 +580,7 @@ Help:
 	Gui, 96:Font
 	Gui, 96:Font, s11, %GUIFont%
 	; Gui, 96:Add, Link, y+5, <a href="https://gitee.com/orz707/Yzime/wikis">影子帮助文档</a>
-	Gui, 96:Show, , 燕子输入法 简易帮助
+	Gui, 96:Show, , 燕子输入法 简明帮助
 Return
 
 _SetYzLogo(){

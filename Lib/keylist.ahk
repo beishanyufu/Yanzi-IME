@@ -177,7 +177,9 @@ Sendsymbol(sel:="",dp:="",pr:=""){
 			} Else If (ThisHotkey=";"&&Inputscheme~="(sg|wr)sp"&&!InStr(pyfenci(insertchar(srf_all_Input,ThisHotkey,insertpos),Inputscheme,1),ThisHotkey)){
 				srf_all_Input:=insertchar(srf_all_Input,ThisHotkey,insertpos), waitnum:=numberfg:=0
 				Settimer srf_tooltip, -1
-			} Else If (((IsPinyin||Inputscheme="pinyin")&&ThisHotkey="'")||(shurulei="xingma"&&Learning&&ThisHotkey="``"))&&!fencifu(){
+			} Else If (ThisHotkey=";"&&Inputscheme~="pinyin"&&jichu_for_select_Array[1,0]~="pinyin"){
+                fencifu2()
+            } Else If (((IsPinyin||Inputscheme="pinyin")&&ThisHotkey="'")||(shurulei="xingma"&&Learning&&ThisHotkey="``"))&&!fencifu(){
 			} Else If (ThisHotkey="\"&&Inputscheme~="sp$"&&jichu_for_select_Array[1,0]~="pinyin"){
 				fencifu()
 			} Else If SubStr(sel,1,1){
@@ -379,6 +381,25 @@ Return
 			Settimer srf_tooltip, -1
 		}
 	}
+
+	; 插入一个音节分隔符或全部删除
+	fencifu2(){
+        global srf_all_Input, srf_all_Input_, waitnum
+        If !InStr(srf_all_Input,"'"){
+            If (pos:= RegExMatch(srf_all_Input_["tip"], "((?<=[iu])(a|e))|((?<=[aeiuv])n'[aoeiuv])|((?<=n)g'[aoeu])|((?<=e)r'[aoeiu])")){
+                StrReplace(SubStr(srf_all_Input_["tip"],1,pos-1),"'",,ovar)
+				srf_all_Input:=SubStr(srf_all_Input,1,pos-1-ovar) "'" SubStr(srf_all_Input,pos-ovar), waitnum:=0
+                Settimer srf_tooltip, -1
+            } Else If (pos:= RegExMatch(srf_all_Input_["tip"], "((?<=[aeiuv]'n)[aoeiuv])|((?<=n'g)[aoeu])|((?<=e'r)[aoeiu])")){
+                StrReplace(SubStr(srf_all_Input_["tip"],1,pos-1),"'",,ovar)
+				srf_all_Input:=SubStr(srf_all_Input,1,pos-1-ovar) "'" SubStr(srf_all_Input,pos-ovar), waitnum:=0
+                Settimer srf_tooltip, -1
+			}       
+        } Else {
+            srf_all_Input:=StrReplace(srf_all_Input, "'"), waitnum:=0
+            Settimer srf_tooltip, -1
+        }
+    }
 
 	;srf_all_input模式 backspace键、esc键、enter键、Lshift键 定义
 	Delete::
