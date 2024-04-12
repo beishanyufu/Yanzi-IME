@@ -1,15 +1,14 @@
 ﻿class Pest 
 {
-    static num := 1897
     Hwnd := ""
     hdc := ""
     PassWord := ""
     alpha:= 255
+    existing:=True
 
     __New(pw){
-        global bitmaps  
+        global bitmaps, total  
         If (!this.Hwnd){            
-            ; num := Pest.num += 1
             Gui, New, +HwndHwnd
             this.Hwnd := Hwnd
             ; Gui, %Hwnd%:-Caption +E0x8080088 +ToolWindow +LastFound -DPIScale +AlwaysOnTop
@@ -54,27 +53,26 @@
         Gui, %Hwnd%:Show, x%startX% y%startY% NA
         ; UpdateLayeredWindow(Hwnd, hdc, 0, 0, 100, 100, 150)
         ; WinSet, Transparent, 150, ahk_id %Hwnd%
-        this.breathe := ObjBindMethod(this, "huxi")
-        breathe := this.breathe
-        SetTimer % breathe, % 25
-
-
+        this.startTime:=A_TickCount
+        ; this.breathe := ObjBindMethod(this, "huxi")
+        ; breathe := this.breathe
+        ; SetTimer % breathe, % 25,-1
+        SetTimer % this, % 25
         Return this        
     }
 
     __Delete(){
-        If (this.Hwnd){
-            Hwnd:=this.Hwnd
-            Gui, %Hwnd%:Destroy
-            ; this.Hwnd:=""
-        }
-        If (this.hdc){
-            DeleteDC(this.hdc)
-        }
+        OutputDebug, % "__delete:" this.PassWord
     }
     
-    huxi(){
+    Call(){
+        Critical
         static huxi
+        global total,timeLength
+        If (this.existing && A_TickCount-this.startTime>=timeLength/total){
+            this.disappear()
+            Return
+        }
         If (this.alpha<=150){
             ; this.alpha:=50
             huxi:=True
@@ -84,6 +82,21 @@
         }
         this.alpha:=huxi?this.alpha+3:this.alpha-2 
         UpdateLayeredWindow(this.Hwnd, this.hdc,,,,, this.alpha)
-    }     
+    }
+    
+    disappear(){
+        this.existing:=False
+        Hwnd:=this.Hwnd
+        Gui, %Hwnd%:Show, Hide
+        SetTimer, % this, Delete
+        If (this.Hwnd){
+            Hwnd:=this.Hwnd
+            Gui, %Hwnd%:Destroy
+            ; this.Hwnd:=""
+        }
+        If (this.hdc){
+            DeleteDC(this.hdc)
+        }
+    }
         
 }
