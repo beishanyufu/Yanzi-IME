@@ -18,10 +18,13 @@ Game:
     MsgBox,, --燕子遇英雄--, 燕子：害虫不可怕，就怕害虫有文化`n英雄：不怕不怕，我来助你一臂之力
     MsgBox,, --英雄做出征前的准备--,
     (
+形势严峻：
 害虫们装备了高科技隐身护盾！
 还使用博大精深的汉字做密码！
-------------------------------
-英雄，请带上我们紧急研发的害虫探测器！！（虽然只是半成品）
+
+英雄出征：
+英雄，请带上我们紧急研发的害虫探测器！！
+（低语：虽然目前还只是个半成品）
 【使用说明】
 1. 设定除虫作业难度等级（难度等级越高，单次作业（时长1分钟）
     探测到的害虫数量越多，但相应地每只害虫被锁定的时间也越短
@@ -56,13 +59,12 @@ Game:
     If FileExist("res/xiaoyanzi.png")
         gameBitmaps.yanzi:=Gdip_CreateBitmapFromFile("res/xiaoyanzi.png")
 
-
     Gui, 28:Default
     Gui, 28:Margin, 12, 12
     Gui, 28:Font, s10 bold, %GUIFont%
     Gui, 28:Add, Text, xm ym Right, 作业难度：
-	Gui, 28:Add, DropDownList, x+0 yp-3 w50 r10 vtotalPest choose8, 1|2|3|4|5|6|7|8|9|10|11|12|13
-    Gui, 28:Add, CheckBox, x+15 ys vgameSound Checked%gameSound%, 声效
+	Gui, 28:Add, DropDownList, x+0 yp-3 w50 r10 vtotalPest  choose8, 1|2|3|4|5|6|7|8|9|10|11|12|13
+    Gui, 28:Add, CheckBox, x+15 ys vgameSound gSetGameSound Checked%gameSound%, 声效
     Gui, 28:Add, Button, x+10 ys-5 Default gStartGame, 开始探测
     Gui, 28:Add, Text, xm y+10, 破解密码：
     Gui, 28:Add, Edit, x+0 yp-3 w190 vuserInput gCheckMima
@@ -77,7 +79,6 @@ Game:
     gameYanziDCDIB:=createDCwithDIB(gameBitmaps.yanzi)
     UpdateLayeredWindow(gameYanzi, gameYanziDCDIB.1, 0, 0, 200, 200)
     Gui, %gameYanzi%:Hide, x0 y0 NA
-
 Return
 
 StartGame:
@@ -90,10 +91,14 @@ StartGame:
     gameScore := 0
     GuiControl, 28:Enable0, 难度等级：
     GuiControl, 28:Enable0, totalPest
-    GuiControl, 28:Enable0, gameSound
+    ; GuiControl, 28:Enable0, gameSound
     GuiControl, 28:Enable0, 开始
     SetTimer, DetectPest, % -1000
     SetTimer, Referee, 100
+Return
+
+SetGameSound:
+    GuiControlGet, gameSound, 28:, gameSound
 Return
 
 28GuiClose:
@@ -155,7 +160,7 @@ Referee:
         MsgBox,, % title, % result
         GuiControl, 28:Enable1, 难度等级：
         GuiControl, 28:Enable1, totalPest
-        GuiControl, 28:Enable1, gameSound
+        ; GuiControl, 28:Enable1, gameSound
         GuiControl, 28:Enable1, 开始
     }
 Return
