@@ -21,7 +21,7 @@ Game:
 害虫们装备了高科技隐身护盾！
 还使用博大精深的汉字做密码！
 ------------------------------
-英雄，请带上我们最新研发的害虫探测器！！
+英雄，请带上我们紧急研发的害虫探测器！！（虽然只是半成品）
 【使用说明】
 1. 设定除虫作业难度等级（难度等级越高，单次作业（时长1分钟）
     探测到的害虫数量越多，但相应地每只害虫被锁定的时间也越短
@@ -61,7 +61,7 @@ Game:
     Gui, 28:Margin, 12, 12
     Gui, 28:Font, s10 bold, %GUIFont%
     Gui, 28:Add, Text, xm ym Right, 作业难度：
-	Gui, 28:Add, DropDownList, x+0 yp-3 w50 r10 vtotalPest choose2, 1|2|3|4|5|6|7|8|9|10|11|12|13
+	Gui, 28:Add, DropDownList, x+0 yp-3 w50 r10 vtotalPest choose8, 1|2|3|4|5|6|7|8|9|10|11|12|13
     Gui, 28:Add, CheckBox, x+15 ys vgameSound Checked%gameSound%, 声效
     Gui, 28:Add, Button, x+10 ys-5 Default gStartGame, 开始探测
     Gui, 28:Add, Text, xm y+10, 破解密码：
@@ -83,7 +83,7 @@ Return
 StartGame:
     pests := []
     preyX:="", preyY:=""
-    timeLength := 20000
+    timeLength := 60000
     GuiControlGet, totalPest, 28:, totalPest
     remainder := totalPest ; := 2
     GuiControlGet, gameSound, 28:, gameSound        
