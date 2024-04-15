@@ -23,8 +23,8 @@ Game:
 还使用博大精深的汉字做密码！
 
 英雄出征：
-英雄，请带上我们紧急研发的害虫探测器！！
-（低语：虽然目前还只是个半成品）
+英雄，请带上我们最新研发的害虫探测器！！
+
 【使用说明】
 1. 设定除虫作业难度等级（难度等级越高，单次作业（时长1分钟）
     探测到的害虫数量越多，但相应地每只害虫被锁定的时间也越短
@@ -58,32 +58,59 @@ Game:
         gameBitmaps.pest2:=Gdip_CreateBitmapFromFile("res/pest2.png")
     If FileExist("res/xiaoyanzi.png")
         gameBitmaps.yanzi:=Gdip_CreateBitmapFromFile("res/xiaoyanzi.png")
+    If FileExist("res/yanwo.png")
+        gameBitmaps.yanwo:=Gdip_CreateBitmapFromFile("res/yanwo.png")
 
     Gui, 28:Default
     Gui, 28:Margin, 12, 12
     Gui, 28:Font, s10 bold, %GUIFont%
     Gui, 28:Add, Text, xm ym Right, 作业难度：
-	Gui, 28:Add, DropDownList, x+0 yp-3 w50 r10 vtotalPest  choose8, 1|2|3|4|5|6|7|8|9|10|11|12|13
+	Gui, 28:Add, DropDownList, x+0 yp-3 w50 r10 vtotalPest  choose8, 1|2|3|4|5|6|7|8|9|10|11|12
     Gui, 28:Add, CheckBox, x+15 ys vgameSound gSetGameSound Checked%gameSound%, 声效
     Gui, 28:Add, Button, x+10 ys-5 Default gStartGame, 开始探测
     Gui, 28:Add, Text, xm y+10, 破解密码：
     Gui, 28:Add, Edit, x+0 yp-3 w190 vuserInput gCheckMima
+    GuiControl, 28:Enable0, userInput
     Gui, 28:Show, AutoSize, 害虫探测器-控制台
 
     gameYanzi:=""
-    gameYanziDCDIB=""
+    gameYanziDCDIB:={}
     Gui, New, +HwndgameYanzi
     Gui, %gameYanzi%:-Caption +E0x0080000 +ToolWindow +LastFound -DPIScale +AlwaysOnTop
     Gui, %gameYanzi%:Show, NA
     WinSet, ExStyle, +0x20, ahk_id%gameYanzi%
-    gameYanziDCDIB:=createDCwithDIB(gameBitmaps.yanzi)
-    UpdateLayeredWindow(gameYanzi, gameYanziDCDIB.1, 0, 0, 200, 200)
+    gameYanziDCDIB.yanzi:=createDCwithDIB(gameBitmaps.yanzi)
+    UpdateLayeredWindow(gameYanzi, gameYanziDCDIB.yanzi.1, 0, 0, 200, 200)
     Gui, %gameYanzi%:Hide, x0 y0 NA
+
+    gameNest:= ""
+    TalkOnStart:=["我们是观众，", "我们是观众，", "看妈妈捉害虫，", "看爸爸捉害虫；", "屏幕前的家伙，", "据说也很厉害，", "能让害虫破防，", "能让害虫现原形！"]
+    TalkOnPrey:=["妈妈捉到一只！", "爸爸捉到一只！", "妈妈好厉害！", "爸爸好棒！"]
+    Gui, New, +HwndgameNest
+    Gui, %gameNest%:-Caption +E0x0080000 +ToolWindow +LastFound -DPIScale +AlwaysOnTop
+    Gui, %gameNest%:Show, NA
+    WinSet, ExStyle, +0x20, ahk_id%gameNest%
+    gameYanziDCDIB.nest:=createDCwithDIB(gameBitmaps.yanwo)
+    UpdateLayeredWindow(gameNest, gameYanziDCDIB.nest.1, 0, 0, 260, 187)
+    Gui, %gameNest%:Show, % "x" A_ScreenWidth-260 " y" 0 " NA"
+    NestToolTip(TalkOnStart[1], A_ScreenWidth-200, -2000)
+    SetTimer, StartTalk, -100
+
+Return
+
+StartTalk:
+    CoordMode, ToolTip
+    For Key, Value in TalkOnStart {
+        ToolTip, %value%, % A_ScreenWidth-190, 110, 11
+        Sleep, 2000
+    }
+    Gosub, RemoveToolTip11
 Return
 
 StartGame:
     pests := []
     preyX:="", preyY:=""
+    yanziXYs:=[]
     timeLength := 60000
     GuiControlGet, totalPest, 28:, totalPest
     remainder := totalPest ; := 2
@@ -93,6 +120,9 @@ StartGame:
     GuiControl, 28:Enable0, totalPest
     ; GuiControl, 28:Enable0, gameSound
     GuiControl, 28:Enable0, 开始
+    GuiControl, 28:Enable0, totalPest
+    GuiControl, 28:Enable1, userInput
+    GuiControl, 28:Focus, userInput
     SetTimer, DetectPest, % -1000
     SetTimer, Referee, 100
 Return
@@ -104,6 +134,17 @@ Return
 28GuiClose:
     Critical
     exitGame()
+Return
+
+28GuiSize:
+    Critical
+    If (A_EventInfo=1){
+        If(gameNest)
+            Gui, %gameNest%:Hide
+    } Else {
+        If(gameNest)
+            Gui, %gameNest%:Show, NA
+    }
 Return
 
 DetectPest:
@@ -127,7 +168,7 @@ CheckMima:
             GuiControl,, userInput
             p.Change2Phase3() 
             preyX:=p.startX, preyY:=p.startY
-            SetTimer, YanziPrey, -800       
+            SetTimer, YanziPrey, -600       
             Break
         }
     }    
@@ -139,7 +180,7 @@ Referee:
             Return
         }        
     }
-     If(remainder=0){
+    If (remainder=0){
         SetTimer,, Delete
         For K, V in pests {
             ; V.__Delete()
@@ -153,34 +194,59 @@ Referee:
             result:="好样的英雄！您本次出征和燕子联手消灭了 " gameScore " 只害虫！"
             if(gameSound)
                 SoundPlay, res/v.wav
+            NestToolTip("爸爸说，他们负责抓，我们负责吃。", A_ScreenWidth-300, -3000)
         }Else{
             title:="--英雄归来--"
             result:="别灰心，英雄。我想您只是对我们的探测器还不熟悉。刚开始使用，您可以适当调低作业难度。"
+            NestToolTip("肚子饿得咕咕叫……", A_ScreenWidth-200, -3000)
+
         }
         MsgBox,, % title, % result
         GuiControl, 28:Enable1, 难度等级：
         GuiControl, 28:Enable1, totalPest
         ; GuiControl, 28:Enable1, gameSound
         GuiControl, 28:Enable1, 开始
+        GuiControl, 28:Enable0, userInput
+        ; GuiControl, 28:Focus, 开始
     }
 Return
 
 YanziPrey:
     Critical
     ; global gameYanzi,gameYanziDCDIB
-    preyX+=200
+    yanziXYs:=[]
     preyY-=100
-    Loop, 3
-    {
-        Gui, %gameYanzi%:Show, x%preyX% y%preyY% NA
-        preyX-=200
-        Sleep, 10
+    yanziXYs.push([preyX,preyY])
+    Loop {
+        preyX-=200    
+        preyY-=50
+        If (preyX>-150 && preyY>-150)
+            yanziXYs.push([preyX,preyY])
+        Else
+            break    
     }
+    preyX:=yanziXYs[1][1], preyY:=yanziXYs[1][2]
+    Loop {
+        preyX+=200    
+        preyY-=60
+        If (preyX<A_ScreenWidth-50 && preyY>-150)
+            yanziXYs.InsertAt(1,[preyX,preyY])
+        Else
+            break    
+    }
+    Gui, %gameYanzi%:Show, x0 y-300 NA
+    For Key, Value in yanziXYs {
+        preyX:=Value[1], preyY:=Value[2]
+        Gui, %gameYanzi%:Show, x%preyX% y%preyY% NA
+        Sleep, 5
+    }
+    Random, OutputVar, 1, % TalkOnPrey.Length()
+    NestToolTip(TalkOnPrey[OutputVar], A_ScreenWidth-200, -2000)
     Gui, %gameYanzi%:Hide, x0 y0 NA
 Return
 
 exitGame(){
-    global gameBitmaps, Pests, gameYanzi, gameYanziDCDIB
+    global gameBitmaps, Pests, gameYanzi, gameYanziDCDIB, gameNest
     For Key, Value in gameBitmaps {
         If (Value)
             Gdip_DisposeImage(Value)
@@ -193,9 +259,22 @@ exitGame(){
     pests:=""
     Gui, 28:Destroy
     Gui, %gameYanzi%:Destroy
-    hbm:=SelectObject(gameYanziDCDIB[1], gameYanziDCDIB[2]), DeleteObject(hbm), DeleteDC(gameYanziDCDIB[1])
+    Gui, %gameNest%:Destroy
+    For Key, Value in gameYanziDCDIB {
+        hbm:=SelectObject(Value[1], Value[2]), DeleteObject(hbm), DeleteDC(Value[1])
+    }
     ExitApp
 }
+
+NestToolTip(tip, x:=1600, period:=-3000){
+    CoordMode, ToolTip
+    ToolTip, %tip%, %x%, 110, 11
+    SetTimer, RemoveToolTip11, %period%
+}
+
+RemoveToolTip11:
+    ToolTip,,,, 11
+return
 
 #Include game_Pest.ahk
 #Include Gdip.ahk ; 集成到主程序后可以删除

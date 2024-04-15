@@ -76,7 +76,7 @@ class Pest
             hdc:=this.HDCs.Pest.1
             UpdateLayeredWindow(this.Hwnd, hdc,,,,, 255)
             CoordMode, ToolTip
-            ToolTip, 害虫的护盾被成功解除！, this.startX-50, this.startY+115, 2
+            ToolTip, 护盾解除！, this.startX, this.startY+115, 2
             if(gameSound)
                 SoundPlay, res/yanzi.wav
             sleep,800
