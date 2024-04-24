@@ -65,7 +65,7 @@ Game:
     Gui, 28:Margin, 12, 12
     Gui, 28:Font, s10 bold, %GUIFont%
     Gui, 28:Add, Text, xm ym Right, 作业难度：
-	Gui, 28:Add, DropDownList, x+0 yp-3 w50 r10 vtotalPest  choose8, 1|2|3|4|5|6|7|8|9|10|11|12
+	Gui, 28:Add, DropDownList, x+0 yp-3 w50 r10 vtotalPest  choose6, 1|2|3|4|5|6|7|8|9|10|11|12
     Gui, 28:Add, CheckBox, x+15 ys vgameSound gSetGameSound Checked%gameSound%, 声效
     Gui, 28:Add, Button, x+10 ys-5 Default gStartGame, 开始探测
     Gui, 28:Add, Text, xm y+10, 破解密码：
