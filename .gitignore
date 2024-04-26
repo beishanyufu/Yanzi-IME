@@ -6,7 +6,6 @@
 *.DB-journal
 *.exe
 *.ico
-*.png
 *.ini
 /test
 /scripts
