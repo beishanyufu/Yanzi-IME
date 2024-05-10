@@ -78,14 +78,14 @@ class Pest
             CoordMode, ToolTip
             ToolTip, 护盾解除！, this.startX, this.startY+115, 2
             if(gameSound)
-                SoundPlay, res/yanzi.wav
+                SoundPlay, Lib/res/yanzi.wav
             sleep,800
             this.disappear()
             Return
         }
         If (this.existing && A_TickCount-this.startTime>=timeLength*0.8/totalPest){
             if(gameSound)
-                SoundPlay, res/low.wav
+                SoundPlay, Lib/res/low.wav
             this.disappear()
             Return
         }
@@ -95,7 +95,7 @@ class Pest
             ToolTip,,,,1
             CoordMode, ToolTip
             if(gameSound)
-                SoundPlay, res/jiu.wav
+                SoundPlay, Lib/res/jiu.wav
             ToolTip, 破解密码成功，请速速输入！, this.startX-70, this.startY+115, 2
         }
         If (this.alpha<=150){

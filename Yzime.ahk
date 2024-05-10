@@ -69,3 +69,4 @@ Return
 ; #Include Lib\suanfa_sanma.ahk	; 二三码混打算法(2码+1辅助码)
 #Include Lib\suanfa_xingma.ahk	; 非全拼类算法
 #Include Lib\suanfa_lianda.ahk	;
+#Include Lib\game_Main.ahk	; 打字小游戏

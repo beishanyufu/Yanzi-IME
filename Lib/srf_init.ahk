@@ -452,7 +452,7 @@ TRAYMENU:
 	; Menu, Tray, Icon, 工具, %DataPath%Yzime.icl, 11
 	; Menu, Tray, Add, 更新, srfUpdate
 	; Menu, Tray, Icon, 更新, %DataPath%Yzime.icl, 5
-	Menu, Games, Add, 就怕害虫有文化（孵化中）, DetectBugs
+	Menu, Games, Add, 英雄和燕子, Game
 	Menu, Tray, Add, 游戏, :Games
 	Menu, Tray, Icon, 游戏, %DataPath%Yzime.icl, 11
 	Menu, Tray, Add, 帮助, Help
@@ -480,9 +480,6 @@ TRAYMENU:
 Return
 AhkSpy:
 	Run, % """" AhkPath """ """ A_ScriptDir "\Lib\tools\AhkSpy.ahk""", %A_ScriptDir%
-Return
-DetectBugs:
-	MsgBox, 0x40, 燕子输入法之就怕害虫有文化（孵化中）, % "哎呀，还没孵出来呢——等我出壳之后再跟你玩ヾ(≧▽≦*)o"
 Return
 LoadLogo:
 	SetYzLogo(srf_mode)

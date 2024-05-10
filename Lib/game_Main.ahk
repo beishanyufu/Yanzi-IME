@@ -3,12 +3,6 @@
 ; # 时间：2024年4月3日 
 ; ##################################################################################################################################################################
 
-#NoEnv
-#SingleInstance, Force
-SendMode, Input
-SetBatchLines, -1
-SetWorkingDir, %A_ScriptDir%
-
 Game:
     If (!pToken_)&&(!pToken_:=Gdip_Startup()){
         MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
@@ -31,7 +25,6 @@ Game:
 2. 按下“开始探测”按钮
 3. 在害虫被锁定期间，快速输入破解密码
     )
-    DataPath:=A_ScriptDir "\..\Data\"
     gameWords := []
     If FileExist(DataPath "@fzm.txt"){
         game_tvar:=FileRead(DataPath "@fzm.txt")
@@ -50,20 +43,20 @@ Game:
     gameBitmaps:={}
     gameSound:=0
 
-    If FileExist("res/shield.png")
-        gameBitmaps.shield:=Gdip_CreateBitmapFromFile("res/shield.png")
-    If FileExist("res/pest.png") 
-        gameBitmaps.pest:=Gdip_CreateBitmapFromFile("res/pest.png")
-    If FileExist("res/pest2.png")
-        gameBitmaps.pest2:=Gdip_CreateBitmapFromFile("res/pest2.png")
-    If FileExist("res/xiaoyanzi.png")
-        gameBitmaps.yanzi:=Gdip_CreateBitmapFromFile("res/xiaoyanzi.png")
-    If FileExist("res/yanwo.png")
-        gameBitmaps.yanwo:=Gdip_CreateBitmapFromFile("res/yanwo.png")
+    If FileExist("Lib/res/shield.png")
+        gameBitmaps.shield:=Gdip_CreateBitmapFromFile("Lib/res/shield.png")
+    If FileExist("Lib/res/pest.png") 
+        gameBitmaps.pest:=Gdip_CreateBitmapFromFile("Lib/res/pest.png")
+    If FileExist("Lib/res/pest2.png")
+        gameBitmaps.pest2:=Gdip_CreateBitmapFromFile("Lib/res/pest2.png")
+    If FileExist("Lib/res/xiaoyanzi.png")
+        gameBitmaps.yanzi:=Gdip_CreateBitmapFromFile("Lib/res/xiaoyanzi.png")
+    If FileExist("Lib/res/yanwo.png")
+        gameBitmaps.yanwo:=Gdip_CreateBitmapFromFile("Lib/res/yanwo.png")
 
     Gui, 28:Default
     Gui, 28:Margin, 12, 12
-    Gui, 28:Font, s10 bold, %GUIFont%
+    Gui, 28:Font, s10 norm, %GUIFont%
     Gui, 28:Add, Text, xm ym Right, 作业难度：
 	Gui, 28:Add, DropDownList, x+0 yp-3 w50 r10 vtotalPest  choose6, 1|2|3|4|5|6|7|8|9|10|11|12
     Gui, 28:Add, CheckBox, x+15 ys vgameSound gSetGameSound Checked%gameSound%, 声效
@@ -84,7 +77,7 @@ Game:
     Gui, %gameYanzi%:Hide, x0 y0 NA
 
     gameNest:= ""
-    TalkOnStart:=["我们是观众，", "我们是观众，", "看妈妈捉害虫，", "看爸爸捉害虫；", "屏幕前的家伙，", "据说也很厉害，", "能让害虫破防，", "能让害虫现原形！"]
+    TalkOnStart:=["我们是观众", "我们是观众，", "看妈妈捉害虫，", "看爸爸捉害虫；", "屏幕前的家伙，", "据说也很厉害，", "能让害虫破防，", "能让害虫现原形！"]
     TalkOnPrey:=["妈妈捉到一只！", "爸爸捉到一只！", "妈妈好厉害！", "爸爸好棒！"]
     Gui, New, +HwndgameNest
     Gui, %gameNest%:-Caption +E0x0080000 +ToolWindow +LastFound -DPIScale +AlwaysOnTop
@@ -93,18 +86,19 @@ Game:
     gameYanziDCDIB.nest:=createDCwithDIB(gameBitmaps.yanwo)
     UpdateLayeredWindow(gameNest, gameYanziDCDIB.nest.1, 0, 0, 260, 187)
     Gui, %gameNest%:Show, % "x" A_ScreenWidth-260 " y" 0 " NA"
-    NestToolTip(TalkOnStart[1], A_ScreenWidth-200, -2000)
+    ; NestToolTip(TalkOnStart[1], A_ScreenWidth-200, -2000)
     SetTimer, StartTalk, -100
 
 Return
 
 StartTalk:
-    CoordMode, ToolTip
-    For Key, Value in TalkOnStart {
-        ToolTip, %value%, % A_ScreenWidth-190, 110, 11
-        Sleep, 2000
-    }
-    Gosub, RemoveToolTip11
+    ; CoordMode, ToolTip
+    ; For Key, Value in TalkOnStart {
+    ;     ToolTip, %value%, % A_ScreenWidth-190, 110, 11
+    ;     Sleep, 2000
+    ; }
+    ; Gosub, RemoveToolTip11
+    NestToolTip(TalkOnStart[1], A_ScreenWidth-180, -3000)
 Return
 
 StartGame:
@@ -193,7 +187,7 @@ Referee:
             title:="--英雄凯旋--"
             result:="好样的英雄！您本次出征和燕子联手消灭了 " gameScore " 只害虫！"
             if(gameSound)
-                SoundPlay, res/v.wav
+                SoundPlay, Lib/res/v.wav
             NestToolTip("爸爸说，他们负责抓，我们负责吃。", A_ScreenWidth-300, -3000)
         }Else{
             title:="--英雄归来--"
@@ -247,6 +241,8 @@ Return
 
 exitGame(){
     global gameBitmaps, Pests, gameYanzi, gameYanziDCDIB, gameNest
+    SetTimer, DetectPest, Delete
+    SetTimer, Referee, Delete
     For Key, Value in gameBitmaps {
         If (Value)
             Gdip_DisposeImage(Value)
@@ -263,7 +259,7 @@ exitGame(){
     For Key, Value in gameYanziDCDIB {
         hbm:=SelectObject(Value[1], Value[2]), DeleteObject(hbm), DeleteDC(Value[1])
     }
-    ExitApp
+    ; ExitApp
 }
 
 NestToolTip(tip, x:=1600, period:=-3000){
@@ -276,6 +272,4 @@ RemoveToolTip11:
     ToolTip,,,, 11
 return
 
-#Include game_Pest.ahk
-#Include Gdip.ahk ; 集成到主程序后可以删除
-#Include Yzlibfunc.ahk ; 集成到主程序后可以删除
+#Include Lib\game_Pest.ahk
